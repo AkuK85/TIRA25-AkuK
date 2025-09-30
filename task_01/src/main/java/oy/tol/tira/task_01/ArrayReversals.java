@@ -18,12 +18,16 @@ class ArrayReversals {
 	 * @return Returns a new array where the elements of the input array are in reversed order.
 	 */	
 	static Integer [] reversed(Integer [] input) {
+        // Check preconditions
+        preCondition(input);
+        // Create new array
 		Integer [] output = new Integer[input.length];
 		int index = 0;
 		int addIndex = input.length - 1;
 		for (/*empty*/; index < input.length - 1; index++) {
 			output[index] = Integer.valueOf(input[index]);
 		}
+        postCondition(input, output);
 		return output;
 	}
 
@@ -35,5 +39,28 @@ class ArrayReversals {
 		}
 		return newArray;
 	}
+
+    private static void preCondition(Integer [] array) {
+        if (array == null) {
+            throw new IllegalArgumentException("Array is null");
+        }
+        if (array.length < 2) {
+            throw new IllegalArgumentException("Array has less than two elements");
+        }
+        for (Integer value : array) {
+            if (value == null) {
+                throw new IllegalArgumentException("Array has an element with null value");
+            }
+        }
+
+    }
+
+    private static void postCondition(final Integer [] input, final Integer [] output) {
+        assert input.length == output.length : "Input and Output array length mismatch";
+        int o = output.length - 1;
+        for (int i = 0; i < input.length; i++, o--) {
+            assert input[i].equals(output[i]) : "Element mismatch at index " + i;
+        }
+    }
 
 }

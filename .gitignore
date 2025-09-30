@@ -10,4 +10,5 @@ xcuserdata/
 *.csv
 *.txt
 *.jar
+.idea/
 
