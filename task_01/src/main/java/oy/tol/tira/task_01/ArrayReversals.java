@@ -27,6 +27,7 @@ class ArrayReversals {
 		for (/*empty*/; index < input.length - 1; index++) {
 			output[index] = Integer.valueOf(input[index]);
 		}
+        // Check postconditions
         postCondition(input, output);
 		return output;
 	}
