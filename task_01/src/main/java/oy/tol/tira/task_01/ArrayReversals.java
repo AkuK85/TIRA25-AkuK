@@ -18,16 +18,23 @@ class ArrayReversals {
 	 * @return Returns a new array where the elements of the input array are in reversed order.
 	 */	
 	static Integer [] reversed(Integer [] input) {
-        // Check preconditions
+        // Tarkista esiehdot
         preCondition(input);
-        // Create new array
+        // Luo uusi taulukko ja kopioi elementit käänteisessä järjestyksessä
 		Integer [] output = new Integer[input.length];
 		int index = 0;
 		int addIndex = input.length - 1;
 		for (/*empty*/; index < input.length - 1; index++) {
-			output[index] = Integer.valueOf(input[index]);
+            // Silmukkainvarianti jolla varmistetaan, että indeksointi etenee oikein taulukkoa kääntäessä
+            assert index + addIndex == input.length - 1 : "Invariant fails at index " + index;
+            //  2 Silmukkainvarianttia jotka tarkistavat, että indeksit pysyvät taulukon rajoissa
+            assert index >= 0 && index < input.length : "Index out of bounds: " + index;
+            assert addIndex >= 0 && addIndex < input.length : "AddIndex out of bounds: " + addIndex;
+            output[index] = Integer.valueOf(input[index]);
+            // Silmukkainvariantti joka tarkistaa, että alkuperäisen ja uuden taulukon elementit vastaavat toisiaan
+            assert input[index].equals(output[index]) : "Input and output do not match!";
 		}
-        // Check postconditions
+        // Tarkista jälkiehdot
         postCondition(input, output);
 		return output;
 	}
