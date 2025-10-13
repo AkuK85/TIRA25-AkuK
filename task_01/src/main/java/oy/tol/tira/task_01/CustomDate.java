@@ -91,8 +91,15 @@ public class CustomDate {
 		if (mm < 1 || mm > 12) {
 			throw new IllegalArgumentException("No such month");
 		}
+        int originalMonth = this.month;
 		this.month = mm;
-		invariant();
+        try {
+            invariant();
+        } catch (IllegalStateException e) {
+            // Palauta vanha kuukausiarvo mikäli invariatti heittää poikkeuksen
+            this.month = originalMonth;
+            throw e;
+        }
 	}
 
 	/**
@@ -113,8 +120,15 @@ public class CustomDate {
 	 */
 
 	public void setYear(final int yy) {
+        int originalYear = this.year;
 		this.year = yy;
-		invariant();
+        try {
+            invariant();
+        } catch (IllegalStateException e) {
+            // Palauta vanha vuosiarvo mikäli invariatti heittää poikkeuksen
+            this.year = originalYear;
+            throw e;
+        }
 	}
 
 	@Override
