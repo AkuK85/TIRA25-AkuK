@@ -32,10 +32,12 @@ class ArrayReversals {
             assert addIndex >= 0 && addIndex < input.length : "AddIndex out of bounds: " + addIndex;
             output[addIndex] = Integer.valueOf(input[index]);
             // Assert jolla tarkistetaan, että alkuperäisen ja uuden taulukon elementit vastaavat toisiaan
-            //assert input[index].equals(output[index]) : "Input and output do not match!";
-		}
+            assert input[index].equals(output[addIndex]) : "Input and output do not match!";
+        }
+        // Assert jolla varmistetaan, että silmukka on käynyt kaikki alkiot läpi
+        assert index == input.length : "Silmukka ei käynyt kaikkia alkioita läpi! Index: " + index;
         // Tarkista jälkiehdot
-        //postCondition(input, output);
+        postCondition(input, output);
 		return output;
 	}
 
@@ -67,7 +69,7 @@ class ArrayReversals {
         assert input.length == output.length : "Input and Output array length mismatch";
         int o = output.length - 1;
         for (int i = 0; i < input.length; i++, o--) {
-            assert input[i].equals(output[i]) : "Element mismatch at index " + i;
+            assert input[i].equals(output[o]) : "Element mismatch at index " + i;
         }
     }
 
