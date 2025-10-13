@@ -167,7 +167,19 @@ public class CustomDate {
 	}
 
 	private void invariant() {
-		
+
+        if (year < 1800 || year > 2200) {
+            throw new IllegalStateException("Annettu vuosiluku ei raja-arvojen sisällä, 1800-2200" + year);
+        }
+
+        if (month < 1 || month > 12) {
+            throw new IllegalStateException("Annettu kuukausi ei ole raja-arvojen sisällä 1-12: " + month);
+        }
+
+        int maxDay = daysInMonth(month, year);
+        if (day < 1 || day > maxDay) {
+            throw new IllegalStateException("Annettu päivä ei ole raja-arvojen sisällä 1-" + maxDay + ": " + day);
+        }
 	}
 	
 }
