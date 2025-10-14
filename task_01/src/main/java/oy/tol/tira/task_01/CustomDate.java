@@ -148,6 +148,10 @@ public class CustomDate {
 					toAdd -= remainingDays + 1;
 					day = 1;
 					month += 1;
+                    if (month > 12) {
+                        month = 1;
+                        year = year + 1;
+                    }
 				} else {
 					day += toAdd;
 					toAdd = 0;
@@ -176,23 +180,23 @@ public class CustomDate {
 				return 28;
 			}
 		default:
-			return -1;
+			throw new IllegalArgumentException("Parameter month has an illegal value: " + month);
 		}
 	}
 
 	private void invariant() {
 
         if (year < 1800 || year > 2200) {
-            throw new IllegalStateException("Annettu vuosiluku ei raja-arvojen sisällä, 1800-2200" + year);
+            throw new IllegalStateException("Parameter year not in range of 1800-2200! Year: " + year);
         }
 
         if (month < 1 || month > 12) {
-            throw new IllegalStateException("Annettu kuukausi ei ole raja-arvojen sisällä 1-12: " + month);
+            throw new IllegalStateException("Parameter month not in range of 1-12! Month: " + month);
         }
 
         int maxDay = daysInMonth(month, year);
         if (day < 1 || day > maxDay) {
-            throw new IllegalStateException("Annettu päivä ei ole raja-arvojen sisällä 1-" + maxDay + ": " + day);
+            throw new IllegalStateException("Parameter day not in range of 1-" + maxDay + "! Day: " + day);
         }
 	}
 	
