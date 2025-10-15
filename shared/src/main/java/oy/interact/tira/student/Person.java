@@ -143,8 +143,15 @@ public class Person implements Comparable<Person> {
 	 */
 	@Override
 	public boolean equals(Object another) {
-		return false;
-	}
+
+        if (another instanceof Person) {
+            Person anotherPerson = (Person) another;
+            return anotherPerson.getId().equals(this.id);
+        } else {
+            return false;
+        }
+    }
+
 
 	// STUDENTS TODO implement compareTo
 	/**
@@ -165,8 +172,19 @@ public class Person implements Comparable<Person> {
 	 */
 	@Override
 	public int compareTo(Person another) {
-		return Integer.MIN_VALUE;
-	}
+        if (another == null) {
+            throw new IllegalArgumentException("Cannot compare to null");
+        }
+        int lastNameComparison = this.lastName.compareTo(another.lastName);
+        if (lastNameComparison != 0) {
+            return lastNameComparison;
+        }
+        int firstNameComparison = this.firstName.compareTo(another.firstName);
+        if (firstNameComparison != 0) {
+            return firstNameComparison;
+        }
+        return this.middleName.compareTo(another.middleName);
+    }
 
 	@Override
 	public String toString() {

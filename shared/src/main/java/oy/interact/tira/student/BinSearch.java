@@ -90,9 +90,9 @@ public class BinSearch {
               if (compareResult == 0) {
                 return midIndex;
               } else if (compareResult < 0) {
-                return searchRecursively(aValue, fromArray, fromIndex, midIndex - 1, comparator); // Rekursiivinen kutsu vasemmalle puolelle
+                return searchRecursively(aValue, fromArray, fromIndex, midIndex - 1, comparator);
               } else {
-                return searchRecursively(aValue, fromArray, midIndex + 1, toIndex, comparator); // Rekursiivinen kutsu oikealle puolelle
+                return searchRecursively(aValue, fromArray, midIndex + 1, toIndex, comparator);
               }
 
               // return Integer.MAX_VALUE;
