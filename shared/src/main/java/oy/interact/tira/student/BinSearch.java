@@ -29,7 +29,27 @@ public class BinSearch {
     */
    public static <T extends Comparable<T>> int searchRecursively(T aValue, T[] fromArray, int fromIndex,
          int toIndex) {
-      return Integer.MAX_VALUE;
+         // Esiehtojen tarkistus
+       if (null == aValue || null == fromArray || fromIndex < 0 || toIndex > fromArray.length) {
+              throw new IllegalArgumentException("Invalid arguments for search.");
+       }
+         if (fromIndex > toIndex) {
+              return -1; // Perustapaus: ei löydy
+         }
+         // Keskikohdan indeksin laskeminen välttäen mahdollisen ylivuodon
+         int midIndex = fromIndex + (toIndex - fromIndex) / 2;
+         // Comparable rajapinnan compareTo metodin käyttö
+         int compareResult = aValue.compareTo(fromArray[midIndex]);
+
+         if (compareResult == 0) {
+             return midIndex; // Perustapaus: löytyi
+         } else if (compareResult < 0) {
+             return searchRecursively(aValue, fromArray, fromIndex, midIndex - 1); // Rekursiivinen kutsu vasemmalle puolelle
+         } else {
+             return searchRecursively(aValue, fromArray, midIndex + 1, toIndex); // Rekursiivinen kutsu oikealle puolelle
+         }
+         // return Integer.MAX_VALUE;
+
       // STUDENTS TODO recursive implementation
    }
 
