@@ -27,30 +27,30 @@ public class BinSearch {
     * @param toIndex The index to search to, inclusive.
     * @return The index of the element found, or -1 if one was not found.
     */
-   public static <T extends Comparable<T>> int searchRecursively(T aValue, T[] fromArray, int fromIndex,
-         int toIndex) {
+   public static <T extends Comparable<T>> int searchRecursively(T aValue, T[] fromArray, int fromIndex, int toIndex) {
          // Esiehtojen tarkistus
-       if (null == aValue || null == fromArray || fromIndex < 0 || toIndex > fromArray.length) {
+       if (null == aValue || null == fromArray || fromIndex < 0 || toIndex >= fromArray.length) {
               throw new IllegalArgumentException("Invalid arguments for search.");
        }
          if (fromIndex > toIndex) {
-              return -1; // Perustapaus: ei löydy
+              return -1; // Elementtiä ei löydy
          }
          // Keskikohdan indeksin laskeminen välttäen mahdollisen ylivuodon
          int midIndex = fromIndex + (toIndex - fromIndex) / 2;
-         // Comparable rajapinnan compareTo metodin käyttö
+         // Comparable rajapinnan compareTo metodin kutsu. Tallenetaan tulos muuttujaan jotta ei tarvitse
+         // kutsua metodia useasti if-else if -rakenteessa.
          int compareResult = aValue.compareTo(fromArray[midIndex]);
 
          if (compareResult == 0) {
-             return midIndex; // Perustapaus: löytyi
+             return midIndex; // Elementti löytyi
          } else if (compareResult < 0) {
              return searchRecursively(aValue, fromArray, fromIndex, midIndex - 1); // Rekursiivinen kutsu vasemmalle puolelle
          } else {
              return searchRecursively(aValue, fromArray, midIndex + 1, toIndex); // Rekursiivinen kutsu oikealle puolelle
          }
-         // return Integer.MAX_VALUE;
 
-      // STUDENTS TODO recursive implementation
+         // return Integer.MAX_VALUE;
+       // STUDENTS TODO recursive implementation
    }
 
    ///////////////////////////////////////////
@@ -75,8 +75,28 @@ public class BinSearch {
     */
    public static <T> int searchRecursively(T aValue, T[] fromArray, int fromIndex,
          int toIndex, Comparator<T> comparator) {
-      return Integer.MAX_VALUE;
-      // STUDENTS TODO recursive implementation
+
+       if (null == aValue || null == fromArray || null == comparator || fromIndex < 0 ||
+                 toIndex >= fromArray.length) {
+                 throw new IllegalArgumentException("Invalid arguments for search.");
+            }
+              if (fromIndex > toIndex) {
+                 return -1;
+              }
+
+              int midIndex = fromIndex + (toIndex - fromIndex) / 2;
+              int compareResult = comparator.compare(aValue, fromArray[midIndex]);
+
+              if (compareResult == 0) {
+                return midIndex;
+              } else if (compareResult < 0) {
+                return searchRecursively(aValue, fromArray, fromIndex, midIndex - 1, comparator); // Rekursiivinen kutsu vasemmalle puolelle
+              } else {
+                return searchRecursively(aValue, fromArray, midIndex + 1, toIndex, comparator); // Rekursiivinen kutsu oikealle puolelle
+              }
+
+              // return Integer.MAX_VALUE;
+       // STUDENTS TODO recursive implementation
    }
 
 }
