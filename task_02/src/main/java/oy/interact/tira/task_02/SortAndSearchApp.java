@@ -79,15 +79,17 @@ public class SortAndSearchApp {
     }
 
     private static void doYourSearch() {
-        /*
+
         try {
             
-            Person [] persons = PersonUtils.createPersons(100);            
+            Person [] persons = PersonUtils.createPersons(100);
+
+            System.out.println("\n-- Starting doYourSearch --");
 
             // TODO: create a comparator comparing person ages.
             // Simplest way to do that is to use Comparator.comparingInt...
+            Comparator<Person> comparator = Comparator.comparingInt(Person::getAge);
             
-
             // Then sort using that comparator...
             SimpleSort.insertionSort(persons, comparator);
 
@@ -99,7 +101,7 @@ public class SortAndSearchApp {
             // Try different ages if no one is found
             int ageToFind = 42;
 
-            // Person toSearch = WHAT SHOULD BE HERE...?
+            Person toSearch = new Person("", "", "", ageToFind);
             
             // First try to find with linear search:
             int index = LinearSearchArray.search(toSearch, persons, 0, persons.length, comparator);
@@ -120,7 +122,7 @@ public class SortAndSearchApp {
         } catch (IOException e) {
             System.err.format("Failed to do the task because %s%n", e.getMessage());
         }
-        */
+
     }
 
 
