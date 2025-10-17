@@ -229,8 +229,8 @@ public class Shapes {
             scheduleTimer();
         } else {
             // STUDENT TODO: change this following the task instructions, step by step!
-            // int firstNotSelectedIndex = Partition.byRule(shapeArray, count, shape -> shape.isSelected());
-            // removeFrom(firstNotSelectedIndex);
+            int firstNotSelectedIndex = Partition.byRule(shapeArray, count, shape -> shape.isSelected());
+            removeFrom(firstNotSelectedIndex);
             // shapeArray = Partition.filter(shapeArray, count, shape -> shape.isSelected());
         }
     }
@@ -245,10 +245,17 @@ public class Shapes {
      */
     public void removeFrom(int index) {
         // STUDENT TODO implement this following the instructions.
+        if (index < 0 || index >= count) {
+            return;
+        }
+        for (int i = index; i < count; i++) {
+            shapeArray[i] = null;
+        }
         // When ever you null an object in the loop, do also this:
-        // if (null != listener) {
-        //     listener.shapesChanged();
-        // }
+        if (null != listener) {
+             listener.shapesChanged();
+        }
+        count = index;
     }
 
 
