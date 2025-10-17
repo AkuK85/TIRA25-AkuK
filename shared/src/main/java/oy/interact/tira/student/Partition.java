@@ -42,9 +42,31 @@ public class Partition {
 	 * @throws IllegalArgumentException if either the array or rule is null.
 	 */
 	public static <T> int byRule(T[] array, final int size, Predicate<T> rule) throws IllegalArgumentException {
-		return -1;
-		// STUDENTS TODO implement partitioning by rule
-   }
+
+        // STUDENTS TODO implement partitioning by rule
+
+        // Esiehtojen tarkistus
+        if (array == null || rule == null) {
+            throw new IllegalArgumentException("Array and rule must not be null");
+        }
+        if (size < 0 || size > array.length) {
+            throw new IllegalArgumentException("Size must be between 0 and the length of the array");
+        }
+
+        int writeIndex = 0;
+
+        for (int readIndex = 0; readIndex < size; readIndex++) {
+            if (rule.test(array[readIndex])) {
+                if (readIndex != writeIndex) {
+                    T temp = array[writeIndex];
+                    array[writeIndex] = array[readIndex];
+                    array[readIndex] = temp;
+                }
+                writeIndex++;
+            }
+        }
+        return writeIndex;
+    }
 
 	/**
 	 * Filters content from the input array to a new array, using a predicate.
