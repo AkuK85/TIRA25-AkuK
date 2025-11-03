@@ -72,12 +72,23 @@ public class SortApp {
 		int totalCount = 0;
 		long start = System.currentTimeMillis();
 
+        // Comparator, joka vertailee henkilöitä sukunimen pituuden mukaan
+        Comparator<Person> lastNameLengthComparator = Comparator.comparingInt(p -> p.getLastName().length());
 
-		// 1. Sort the array using insertion sort, by last name length, in ascending
+        // 1. Sort the array using insertion sort, by last name length, in ascending
 		// (natural) order.
+        SimpleSort.insertionSort(persons, lastNameLengthComparator);
+
 		// 2. Then print out the person with shortest last name (first in array),
 		// 3. and print also the person with the longest last name (last in array)
 		// and also the length of those names.
+        if  (printDetails) {
+            System.out.println("Shortest last name was " + persons[0] + ", " + persons[0].getLastName().length() +
+                    " characters");
+            System.out.println("Longest last name was " + persons[persons.length - 1] + ", " +
+                    persons[persons.length - 1].getLastName().length() + " characters");
+        }
+
 		// 4. Then go through the array in order, and count the occurrence of each name
 		// length, printing out the length of the last name and the occurrence count
 		// of the name, as in the readme example.
@@ -85,6 +96,23 @@ public class SortApp {
 		// Do not print out all the names in the array, but only when the name
 		// changes, then print the previous name and the count.
 		// See the readme for an example what should be printed out.
+        if (persons.length > 0) {
+            int currentLength = persons[0].getLastName().length();
+            int countForLength = 0;
+            for (Person person : persons) {
+                if (person.getLastName().length() == currentLength) {
+                    countForLength++;
+                } else {
+                    if (printDetails) System.out.format("Name length: %5d count: %d%n", currentLength, countForLength);
+                    totalCount += countForLength;
+                    currentLength = person.getLastName().length();
+                    countForLength = 1;
+                }
+            }
+            if (printDetails) System.out.format("Name length: %5d count: %d%n", currentLength, countForLength);
+            totalCount += countForLength;
+        }
+
 
 
 		if (printDetails) System.out.format("Handled %,d persons out of %,d%n", totalCount, persons.length);
