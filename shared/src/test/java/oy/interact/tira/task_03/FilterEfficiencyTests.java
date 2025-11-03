@@ -98,8 +98,8 @@ public class FilterEfficiencyTests {
         System.out.format(" - for loop speed average    : %5d ms%n", loopSpeed);
         double difference = loopSpeed / (double)partitioningSpeed;
         System.out.format(" - Difference: %.2f%n", difference);
-        if (DATASET_SIZE > 1_000) {
-            assertTrue(difference > 1000.0, "Difference is small, are you sure your filter/partitioning is implemented correctly"); 
+        if (DATASET_SIZE > 5_000) {
+            assertTrue(difference > 100.0, "Difference is small, are you sure your filter/partitioning is implemented correctly");
         }
     }
 

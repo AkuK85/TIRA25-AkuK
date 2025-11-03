@@ -10,34 +10,34 @@ public class Partition {
 
 	/**
 	 * Partition an array using the rule specified with a Predicate.
-	 * 
+	 *
 	 * Moves all elements that conform to the given rule, to the
 	 * beginning of the array. Implementation MUST be stable, that is
 	 * the order of the moved elements remain the same as in the original
 	 * array.
-	 * 
+	 *
 	 * Array may contain null elements. One usage of this algorithm may be,
 	 * in fact, to move all the nulls to the end of the array. For example:
-	 * 
+	 *
 	 * Integer [] array = {3, 1, 4, null, 1, 5, 9, null, 2, 6, 5, null, 4};
     * System.out.println(Arrays.toString(array));
     * int index = Partition.byRule(array, number -> number != null );
     * System.out.format("Index of first null element: %d%n", index);
     * System.out.println(Arrays.toString(array));
-	 * 
+	 *
 	 * prints out:
-	 * 
+	 *
 	 * [3, 1, 4, null, 1, 5, 9, null, 2, 6, 5, null, 4]
     * Index of first null element: 10
     * [3, 1, 4, 1, 5, 9, 2, 6, 5, 4, null, null, null]
 	 *
 	 * As you can see, the conforming values (non-nulls) are in the same order as before,
 	 * so the algorithm is stable.
-	 * 
-	 * @param array The array to partition, must not be null. 
+	 *
+	 * @param array The array to partition, must not be null.
 	 * @param size The count of elements in the array; index up to (not including) the array is partitioned to.
 	 * @param rule Rule to use in determining which elements should be moved to prefix of array.
-	 * @return The index that contains the first element _not_ conforming to the rule, 
+	 * @return The index that contains the first element _not_ conforming to the rule,
 	 * or the value of parameter size, if no conforming elements were found.
 	 * @throws IllegalArgumentException if either the array or rule is null.
 	 */
@@ -50,23 +50,28 @@ public class Partition {
             throw new IllegalArgumentException("Array and rule must not be null");
         }
         if (size < 0 || size > array.length) {
-            throw new IllegalArgumentException("Size must be between 0 and the length of the array");
+            throw new IllegalArgumentException("Size must be within array bounds");
         }
+        int index = 0;
+        while (index < size && rule.test(array[index])) {
+            index++;
+        }
+        if (index == size) {
+            return index;
+        }
+        int nextIndex = index + 1;
 
-        int writeIndex = 0;
-
-        for (int readIndex = 0; readIndex < size; readIndex++) {
-            if (rule.test(array[readIndex])) {
-                if (readIndex != writeIndex) {
-                    T temp = array[writeIndex];
-                    array[writeIndex] = array[readIndex];
-                    array[readIndex] = temp;
-                }
-                writeIndex++;
+        while (nextIndex < size) {
+            if (rule.test(array[nextIndex])) {
+                ArrayUtils.swap(array, nextIndex, index);
+                index++;
             }
+            nextIndex++;
         }
-        return writeIndex;
+        return index;
     }
+
+
 
 	/**
 	 * Filters content from the input array to a new array, using a predicate.
@@ -80,7 +85,17 @@ public class Partition {
 	 * @throws IllegalArgumentException if either the array or rule is null.
 	 */
 	public static <T> T [] filter(final T [] array, int count, Predicate<T> predicate) throws IllegalArgumentException {
-		return null;
+
+        if (array == null || predicate == null) {
+            throw new IllegalArgumentException("Array and predicate must not be null");
+        }
+        if (count < 0 || count > array.length) {
+            throw new IllegalArgumentException("Count must be between 0 and the length of the array");
+        }
+        T[] tempArray = ArrayUtils.copyOf(array, count);
+        int newSize = byRule(tempArray, count, predicate);
+        return ArrayUtils.copyOf(tempArray, newSize);
+
 		// STUDENTS TODO implement filtering by rule, using Partition.byRule
 	}
 

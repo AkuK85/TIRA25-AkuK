@@ -229,9 +229,10 @@ public class Shapes {
             scheduleTimer();
         } else {
             // STUDENT TODO: change this following the task instructions, step by step!
-            int firstNotSelectedIndex = Partition.byRule(shapeArray, count, shape -> shape.isSelected());
-            removeFrom(firstNotSelectedIndex);
-            // shapeArray = Partition.filter(shapeArray, count, shape -> shape.isSelected());
+            // int firstNotSelectedIndex = Partition.byRule(shapeArray, count, shape -> shape.isSelected());
+            // removeFrom(firstNotSelectedIndex);
+            shapeArray = Partition.filter(shapeArray, count, shape -> shape.isSelected());
+            count = shapeArray.length;
         }
     }
 
