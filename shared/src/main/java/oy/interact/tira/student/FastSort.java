@@ -41,11 +41,29 @@ public class FastSort {
    ///////////////////////////////////////////////////////
 
    public static <E> void sort(E[] array, Comparator<E> comparator) {
-      throw new NotYetImplementedException("FastSort not yet implemented");
+      sort(array, 0, array.length - 1, comparator);
    }
 
    public static <E> void sort(E[] array, int begin, int end, Comparator<E> comparator) {
-      throw new NotYetImplementedException("FastSort not yet implemented");
+      if  (begin < end) {
+          int partitionIndex = partition(array, begin, end, comparator);
+          sort(array, begin, partitionIndex - 1, comparator);
+          sort(array, partitionIndex + 1, end, comparator);
+      }
+   }
+
+   private static <E> int partition(E[] array, int low, int high, Comparator<E> comparator) {
+        E pivot =  array[high];
+        int i = (low - 1);
+
+        for (int j = low; j < high; j++) {
+            if (comparator.compare(array[j], pivot) <= 0) {
+                i++;
+                ArrayUtils.swap(array, i, j);
+            }
+        }
+        ArrayUtils.swap(array, i + 1, high);
+        return i + 1;
    }
 
 }
