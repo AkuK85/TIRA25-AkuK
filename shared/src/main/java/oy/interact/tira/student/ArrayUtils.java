@@ -78,7 +78,17 @@ public class ArrayUtils {
     * @throws IllegalArgumentException if parameters are not valid
     */
    public static <T> T findEdgeValue(T [] fromArray, BiPredicate<T, T> usingPredicate) throws IllegalArgumentException {
-      throw new NotYetImplementedException("task_04 ArrayUtils.findEdgeValue() not yet implemented");
+      if (fromArray == null || usingPredicate == null || fromArray.length == 0) {
+          throw new IllegalArgumentException("Array or predicate cannot be null and array cannot be empty");
+      }
+      T found = fromArray[0];
+
+      for (int i = 1; i < fromArray.length; i++) {
+          if (usingPredicate.test(fromArray[i], found)) {
+              found = fromArray[i];
+          }
+      }
+      return found;
    }
 
    /**
