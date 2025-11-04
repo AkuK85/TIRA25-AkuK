@@ -191,6 +191,28 @@ public class SortApp {
 		// Do not print out all the names in the array, but only when the name
 		// changes, then print the name and the count.
 		// See the readme for an example what should be printed out.
+
+        Person shortest = ArrayUtils.findEdgeValue(persons, (p1, p2) -> p1.getLastName().length() <
+                p2.getLastName().length());
+        int shortestLastName = shortest.getLastName().length();
+
+        Person longest = ArrayUtils.findEdgeValue(persons, (p1, p2) -> p1.getLastName().length() >
+                p2.getLastName().length());
+        int longestLastName = longest.getLastName().length();
+
+        if (printDetails) {
+            System.out.println("Shortest last name was " + shortest + ", " + shortestLastName + " characters");
+            System.out.println("Longest last name was " + longest + ", " + longestLastName +  " characters");
+        }
+
+        for (int length = shortestLastName; length <= longestLastName; length++) {
+            final int currentLength = length;
+            Person[] filtered = Partition.filter(persons, persons.length, p -> p.getLastName().length() == currentLength);
+            if (filtered.length > 0) {
+                if (printDetails) System.out.format("Name length: %5d count: %d%n", currentLength, filtered.length);
+                totalCount += filtered.length;
+            }
+        }
 		
 		if (printDetails) System.out.format("Handled %,d persons out of %,d%n", totalCount, persons.length);
 		long duration = System.currentTimeMillis() - start;
