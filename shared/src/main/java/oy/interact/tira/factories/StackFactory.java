@@ -1,6 +1,7 @@
 package oy.interact.tira.factories;
 
 import oy.interact.tira.util.StackInterface;
+import oy.interact.tira.student.StackImplementation;
 
 public class StackFactory {
 	private StackFactory() {
@@ -8,28 +9,23 @@ public class StackFactory {
 	}
 
 	public static StackInterface<String> createStringStack() {
-		return null;
-		// return new StackImplementation<>();
+		return new StackImplementation<>();
 	}
 
 	public static StackInterface<Integer> createIntegerStack() {
-		return null;
-		// return new StackImplementation<>();
+		return new StackImplementation<>();
 	}
 
 	public static StackInterface<Integer> createIntegerStack(int capacity) {
-		return null;
-		// return new StackImplementation<>(capacity);
+		return new StackImplementation<>(capacity);
 	}
 
 	public static StackInterface<Character> createCharacterStack() {
-		return null;
-		// return new StackImplementation<>();
+		return new StackImplementation<>();
 	}
 
 	public static StackInterface<Character> createCharacterStack(int capacity) {
-		return null;
-		// return new StackImplementation<>(capacity);
+		return new StackImplementation<>(capacity);
 	}
 
 }
