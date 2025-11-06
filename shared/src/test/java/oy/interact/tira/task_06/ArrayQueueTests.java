@@ -378,44 +378,93 @@ class ArrayQueueTests
         queue.enqueue(1);
         queue.enqueue(2);
         System.out.println(queue.toString());
-        queue.dequeue();
+        assertEquals("[1, 2]", queue.toString(), "toString returns invalid data");
+        
+        var value = queue.dequeue();
+        assertEquals(1, value, "dequeue returned wrong value");
         System.out.println(queue.toString());
+        assertEquals("[2]", queue.toString(), "toString returns invalid data");
+        
         queue.enqueue(3);
         System.out.println(queue.toString());
-        queue.dequeue();
+        assertEquals("[2, 3]", queue.toString(), "toString returns invalid data");
+        
+        value = queue.dequeue();        
+        assertEquals(2, value, "dequeue returned wrong value");
         System.out.println(queue.toString());
-        queue.dequeue();
+        assertEquals("[3]", queue.toString(), "toString returns invalid data");
+        value = queue.dequeue();
+        
+        assertEquals(3, value, "dequeue returned wrong value");
         System.out.println(queue.toString());
+        assertEquals("[]", queue.toString(), "toString returns invalid data");
+
         queue.enqueue(4);
         System.out.println(queue.toString());
-        queue.dequeue();
+        assertEquals("[4]", queue.toString(), "toString returns invalid data");
+
+        value = queue.dequeue();
+        assertEquals(4, value, "dequeue returned wrong value");
         System.out.println(queue.toString());
+        assertEquals("[]", queue.toString(), "toString returns invalid data");
+
         queue.enqueue(5);
         System.out.println(queue.toString());
-        queue.dequeue();
+        assertEquals("[5]", queue.toString(), "toString returns invalid data");
+
+        value = queue.dequeue();
+        assertEquals(5, value, "dequeue returned wrong value");
         System.out.println(queue.toString());
+        assertEquals("[]", queue.toString(), "toString returns invalid data");
+
         queue.enqueue(6);
         System.out.println(queue.toString());
-        queue.dequeue();
+        assertEquals("[6]", queue.toString(), "toString returns invalid data");
+
+        value = queue.dequeue();
+        assertEquals(6, value, "dequeue returned wrong value");
         System.out.println(queue.toString());
+        assertEquals("[]", queue.toString(), "toString returns invalid data");
+
         queue.enqueue(7);
         System.out.println(queue.toString());
-        queue.dequeue();
+        assertEquals("[7]", queue.toString(), "toString returns invalid data");
+
+        value = queue.dequeue();
+        assertEquals(7, value, "dequeue returned wrong value");
         System.out.println(queue.toString());
+        assertEquals("[]", queue.toString(), "toString returns invalid data");
+
         queue.enqueue(8);
         System.out.println(queue.toString());
-        queue.dequeue();
+        assertEquals("[8]", queue.toString(), "toString returns invalid data");
+
+        value = queue.dequeue();
+        assertEquals(8, value, "dequeue returned wrong value");
         System.out.println(queue.toString());
+        assertEquals("[]", queue.toString(), "toString returns invalid data");
+
         queue.enqueue(9);
         System.out.println(queue.toString());
-        queue.dequeue();
+        assertEquals("[9]", queue.toString(), "toString returns invalid data");
+
+        value = queue.dequeue();
+        assertEquals(9, value, "dequeue returned wrong value");
         System.out.println(queue.toString());
+        assertEquals("[]", queue.toString(), "toString returns invalid data");
+
         queue.enqueue(10);
         System.out.println(queue.toString());
-        queue.dequeue();
+        assertEquals("[10]", queue.toString(), "toString returns invalid data");
+        
+        value = queue.dequeue();
+        assertEquals(10, value, "dequeue returned wrong value");
         System.out.println(queue.toString());
+        assertEquals("[]", queue.toString(), "toString returns invalid data");
+
         queue.enqueue(11);
         System.out.println(queue.toString());
+        assertEquals("[11]", queue.toString(), "toString returns invalid data");
     }
     
     @Test
@@ -427,25 +476,47 @@ class ArrayQueueTests
 
         queue.enqueue(number++);
         System.out.println(queue.toString());
-        queue.dequeue();
+        assertEquals("[1]", queue.toString(), "toString returns invalid data");
+
+        var value = queue.dequeue();
+        assertEquals(1, value, "dequeue'd value is wrong");
         System.out.println(queue.toString());
+        assertEquals("[]", queue.toString(), "toString returns invalid data");
+        
         queue.enqueue(number++);
         System.out.println(queue.toString());
+        assertEquals("[2]", queue.toString(), "toString returns invalid data");
+        
         queue.enqueue(number++);
         System.out.println(queue.toString());
-        queue.dequeue();
+        assertEquals("[2, 3]", queue.toString(), "toString returns invalid data");
+        
+        value = queue.dequeue();
+        assertEquals(2, value, "dequeue'd value is wrong");
         System.out.println(queue.toString());
+        assertEquals("[3]", queue.toString(), "toString returns invalid data");
+        
         queue.enqueue(number++);
         System.out.println(queue.toString());
+        assertEquals("[3, 4]", queue.toString(), "toString returns invalid data");
+        
         queue.enqueue(number++);
         System.out.println(queue.toString());
-        queue.dequeue();
+        assertEquals("[3, 4, 5]", queue.toString(), "toString returns invalid data");
+        
+        value = queue.dequeue();
+        assertEquals(3, value, "dequeue'd value is wrong");
         System.out.println(queue.toString());
+        assertEquals("[4, 5]", queue.toString(), "toString returns invalid data");
 
         queue.enqueue(number++);
         System.out.println(queue.toString());
-        queue.dequeue();
+        assertEquals("[4, 5, 6]", queue.toString(), "toString returns invalid data");
+        
+        value = queue.dequeue();
+        assertEquals(4, value, "dequeue'd value is wrong");
         System.out.println(queue.toString());
+        assertEquals("[5, 6]", queue.toString(), "toString returns invalid data");
     }
     /**
      * Utility method to create a random size queue.
