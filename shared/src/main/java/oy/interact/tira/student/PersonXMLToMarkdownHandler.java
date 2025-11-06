@@ -15,6 +15,7 @@ public class PersonXMLToMarkdownHandler extends DefaultHandler {
     // If print is true, then code must print out error information to System.err
     private boolean print = true;    
     // STUDENT TODO: define a member variable for a StackInterface of Strings using StackInterface and StackFactory.
+    private StackInterface<String> elementStack = StackFactory.createStringStack();
 
     private int personNumber = 1;
     private StringBuilder docBuilder = null;
@@ -54,6 +55,7 @@ public class PersonXMLToMarkdownHandler extends DefaultHandler {
     public void startDocument() throws SAXException {
         // STUDENT TODO: Reset the stack by calling clear() so that is
         // resetted to empty state before starting to handle a new XML document.
+        elementStack.clear();
 
         docBuilder = new StringBuilder();
         personNumber = 0;
@@ -69,6 +71,18 @@ public class PersonXMLToMarkdownHandler extends DefaultHandler {
         // 1. Append an error string information to docBuilder
         // 2. If member variable print is true, print error information also, using System.err.println.
         // 3. Finally, throw SAXException
+
+        if (!elementStack.isEmpty()) {
+            String unclosedElement = elementStack.peek();
+            String errorMessage = "Faulty XML: Unclosed element at the end of the document <" + unclosedElement + ">";
+
+            docBuilder.append("\n\nERROR: ").append(errorMessage);
+
+            if (print) {
+                System.err.println(errorMessage);
+            }
+            throw new SAXException(errorMessage);
+        }
     }
 
     @Override
@@ -110,6 +124,7 @@ public class PersonXMLToMarkdownHandler extends DefaultHandler {
         // STUDENT TODO: push the element name (qName parameter) to stack to validate the correctness of the XML.
         // - When an XML element starts, the next ending element must be an element with the same name.
         // - So, push the start element to stack, and then in endElement, check that these match.
+        elementStack.push(qName);
     }
 
     @Override
@@ -122,6 +137,25 @@ public class PersonXMLToMarkdownHandler extends DefaultHandler {
         // 
         // Before throwing the exceptions, if print is true, print error information
         // also, using System.err.println. After that, throw.
+
+        String openElement;
+        try {
+            openElement = elementStack.pop();
+        } catch (IllegalStateException e) {
+            String errorMessage = "Faulty XML: Extra element at end </" + qName + ">";
+            if (print) {
+                System.err.println(errorMessage);
+            }
+            throw new SAXException(errorMessage);
+        }
+
+        if (!openElement.equals(qName)) {
+            String errorMessage = "Faulty XML: Elements do not match. Expected: <" + qName + ">";
+            if (print) {
+                System.err.println(errorMessage);
+            }
+            throw new SAXException(errorMessage);
+        }
     }
 
     @Override
