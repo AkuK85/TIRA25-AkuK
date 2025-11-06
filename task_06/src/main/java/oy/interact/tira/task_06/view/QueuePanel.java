@@ -36,7 +36,7 @@ public class QueuePanel extends JPanel implements ShopListener {
     //   measureAndCompare to true. Then you won't see printouts
     //   or GUI changes, but in console can view the measurements as csv data
     //   you can take to a spreadsheet app for graphing.
-    private boolean measureAndCompare = false;
+    private boolean measureAndCompare = true;
     private static final int MIN_QUEUES = 1;
     private static final int MAX_QUEUES = 8;
     private int currentCueues = MIN_QUEUES;
