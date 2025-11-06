@@ -207,7 +207,13 @@ public class LittleChocolateShop {
     private void prepareQueues(int count) {
         queues.clear();
         // STUDENT: TODO: prepare the queues, following the
-        // documentation in the method comments.        
+        // documentation in the method comments.
+
+        for (int i = 0; i < count; i++) {
+            String queueName = "Queue" + (i + 1);
+            QueueInterface<Integer> newQueue = ArrayQueueFactory.createIntegerQueue();
+            queues.put(queueName, newQueue);
+        }
 
         // Then refresh the GUI
         refreshViews(RefreshReason.REFRESHING, null);
@@ -225,7 +231,12 @@ public class LittleChocolateShop {
         // STUDENTS TODO: get the queue with the shortest name
         // from the `queues` using get method,
         // and add the customer's ticket number to the queue.
-        
+
+        QueueInterface<Integer> shortestQueue = queues.get(shortestName);
+
+        if (shortestQueue != null) {
+            shortestQueue.enqueue(ticketNumber);
+        }
         
         // No need to touch the code below.
         List<String> list = new ArrayList<>();
@@ -250,7 +261,7 @@ public class LittleChocolateShop {
             if (queue != null && queue.size() > 0) {
                 // STUDENTS TODO From the `queue`, dequeue the customer's
                 // ticket number to `servedCustomer` variable.
-                Integer servedCustomer = -1;
+                Integer servedCustomer = queue.dequeue();
 
                 // No need to touch this code below.
                 final String name = (String)queueNames[queueToServe];
