@@ -94,21 +94,24 @@ public class ReverseListTests {
          start = System.nanoTime();
          // Get from almost the end of the collection, 5/6th from the start
          int indexToGet = (originalListOfGrapes.size() / 6) * 5;
-         String grape1 = originalListOfGrapes.get(indexToGet);
+         final String grape1 = originalListOfGrapes.get(indexToGet);
          duration = System.nanoTime() - start;
+         assertNotNull(grape1, () -> "Should get the grape from the Java array");
          System.out.format("Getting grape %s using get(int) method -- at index %d/%d...%n", grape1, indexToGet, originalListOfGrapes.size());
          System.out.format("Java ArrayList: getting grape took\t%10d ns.\n", duration);
          // Java LinkedList
          start = System.nanoTime();
-         grape1 = javaLinkedList.get(originalListOfGrapes.size()-1);
+         final String grape2 = javaLinkedList.get(indexToGet);
          duration = System.nanoTime() - start;
+         assertNotNull(grape2, () -> "Should get the grape from the linked list");
+         assertEquals(grape1, grape2, () -> "Grapes in same indices should match");
          System.out.format("Java LinkedList: getting grape took\t%10d ns.\n", duration);
          // Student linked list
          start = System.nanoTime();
-         String grape2 = linkedListToTest.get(linkedListToTest.size()-1);
+         final String grape3 = linkedListToTest.get(indexToGet);
          duration = System.nanoTime() - start;
-         assertNotNull(grape2, () -> "Should get the grape from the linked list");
-         assertEquals(grape1, grape2, () -> "Grapes in same indexes should match");
+         assertNotNull(grape3, () -> "Should get the grape from the linked list");
+         assertEquals(grape2, grape3, () -> "Grapes in same indices should match");
          System.out.format("Your linked list: getting grape took\t%10d ns.\n", duration);
          // Benchmarking indexOf using element from containers.
          // Java ArrayList

@@ -1,6 +1,8 @@
 [allowedImports]
 *,import java.util.Comparator
 *,import java.util.function.Predicate
+*,import java.util.function.BiPredicate
+*,import java.util.function.ToIntFunction
 *,import oy.interact.tira.
 *,import java.lang.Math;
 *,import static java.lang.Math.;
@@ -14,6 +16,7 @@ ArrayUtils,import java.util.concurrent.ThreadLocalRandom;
 ArrayUtils,import java.util.function.BiPredicate;
 PersonXMLToMarkdownHandler,import org.xml.sax.
 PersonXMLToMarkdownHandler,import java.util.Date
+LinkedListImplementation,import java.util.Objects
 Person,import java.util.UUID
 SortApp,import java.io.
 Graph,import java.util.
@@ -36,6 +39,16 @@ GameViewConstants,Ellipse,Shape,ResultsPanel,WordFilter,ShapeApp,Triangle,Rectan
 ArrayReversals.reversed,must,assert
 CustomDate.invariant,must,throw
 SortAndSearchApp.doYourSearch,must,Comparator
+FastSort.sort,mustnot,Arrays.sort
+BinSearch.searchRecursively,must,searchRecursively
+BinSearch.searchRecursively,mustnot,while
+BinSearch.searchRecursively,mustnot,for
+Partition.byRule,must,rule.test
+Partition.byRule,mustnot,new T[
+Partition.byRule,mustnot,ArrayUtils.copyOf
+Partition.filter,must,byRule
+Person.equals,mustnot,throw
+Person.compareTo,must,throw
 Shapes.removeNotSelected4,must,Partition.filter
 SortApp.countByInsertionSorting,must,SimpleSort.insertionSort
 SortApp.countByFastSorting,must,FastSort.sort
@@ -58,14 +71,6 @@ LittleChocolateShop.prepareQueues,must,ArrayQueueFactory.createIntegerQueue
 LittleChocolateShop.newCustomerEntered,must,enqueue(ticketNumber)
 WormGamePanel.initializeSnake,must,ListFactory.createPointLinkedList
 LinkedListImplementation.toString,must,StringBuilder
-FastSort.sort,mustnot,Arrays.sort
-BinSearch.searchRecursively,must,searchRecursively
-BinSearch.searchRecursively,mustnot,while
-BinSearch.searchRecursively,mustnot,for
-Partition.byRule,must,rule.test
-Partition.byRule,mustnot,new T[
-Partition.byRule,mustnot,ArrayUtils.copyOf
-Partition.filter,must,byRule
 Person.hashCode,mustnot,id.hashCode()
 HashTableDictionary.add,must,key.hashCode()
 HashTableDictionary.get,must,key.hashCode()

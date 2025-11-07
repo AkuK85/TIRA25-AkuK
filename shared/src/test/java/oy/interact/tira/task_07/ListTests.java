@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
@@ -79,10 +80,10 @@ public class ListTests {
 				"Expecting result false when trying to add to index < 0.");
 		assertThrows(IndexOutOfBoundsException.class, () -> listToTest.add(3, "Item"),
 				"Expecting result false when trying to add to index > 0 for an empty list.");
-		assertFalse(listToTest.remove("Item"),
-				() -> "Expecting to fail to remove an item from the list when it is empty");
-		assertEquals(false, listToTest.remove(null),
-				"Expecting to return false (not removed) when removing null from the list when it is empty");
+		assertThrows(NoSuchElementException.class, () -> listToTest.remove("Item"),
+				"Expecting to fail with NoSuchElementException to remove an item from the list when it is empty");
+		assertThrows(NoSuchElementException.class, () -> listToTest.remove(null),
+				"Expecting to fail with NoSuchElementException when removing null from the list when it is empty");
 		assertThrows(IndexOutOfBoundsException.class, () -> listToTest.remove(-1),
 				"Expecting to fail to remove an item from index -1 of the list");
 		assertThrows(IndexOutOfBoundsException.class, () -> listToTest.remove(0),
