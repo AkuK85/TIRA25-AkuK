@@ -3,6 +3,7 @@ package oy.interact.tira.factories;
 import java.awt.Point;
 import oy.interact.tira.util.Car;
 import oy.interact.tira.util.LinkedListInterface;
+import oy.interact.tira.student.LinkedListImplementation;
 
 /**
  * This class creates different types of lists implementing the {@code LinkedListInterface} interface.
@@ -22,18 +23,15 @@ public class ListFactory {
    public static LinkedListInterface<String> createStringLinkedList() {
       // - Instantiates your list implementation, 
       // - and return the linked list object to the caller.
-      return null;
-      // return new LinkedListImplementation<>();
+      return new LinkedListImplementation<>();
    }
 
    public static LinkedListInterface<Car> createCarLinkedList() {
-      return null;
-      // return new LinkedListImplementation<>();
+      return new LinkedListImplementation<>();
    }
 
    public static LinkedListInterface<Point> createPointLinkedList() {
-      return null;
-      // return new LinkedListImplementation<>();
+      return new LinkedListImplementation<>();
    }
 
 }
