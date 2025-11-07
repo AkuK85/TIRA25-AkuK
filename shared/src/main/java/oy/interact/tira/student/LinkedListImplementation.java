@@ -15,7 +15,7 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
     private static class Node<E> {
         E element;
         Node<E> next;
-        Node<E>  previous;
+        Node<E> previous;
 
         // Solmun muodostin
         Node(E element, Node<E> previous, Node<E> next) {
@@ -70,7 +70,7 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
         if (oldTail == null) {
             // Lista oli tyhjä
             this.head = newTail;
-        } else  {
+        } else {
             // Linkitetään vanha häntä eteenpäin
             oldTail.next = newTail;
         }
@@ -111,12 +111,18 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
 
     @Override
     public E removeFirst() throws NoSuchElementException {
-
+        if (head == null) {
+            throw new NoSuchElementException("List is empty");
+        }
+        return unlink(head);
     }
 
     @Override
     public E removeLast() throws NoSuchElementException {
-
+        if (tail == null) {
+            throw new NoSuchElementException("List is empty");
+        }
+        return unlink(tail);
     }
 
     // Tarkista tätä tehdessä vielä erratasta!
@@ -158,5 +164,36 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
 
     }
 
+    // Privaatti apumetodi poistologiikassa käytettäväksi, tässä on hyödynnetty Linked List luennolla esiteltyä ja luentokalvon
+    // sivulta 10 löytyvää pseudokoodia unlink-metodista. Tätä hyödyntämällä vältetään turhaa toistoa poistooperaation
+    // metodeissa. Unlink-metodin avulla poistetaan haluttu solmu listasta, oli se sitten alussa, lopussa tai keskellä.
+    // Poiston jäkeen metodi "ompelee" poistetun solmun naapurit yhteen.
+    private E unlink(Node<E> nodeToUnlink) {
+        final E element = nodeToUnlink.element;
+        final Node<E> prev = nodeToUnlink.previous;
+        final Node<E> next = nodeToUnlink.next;
+
+        if (prev == null) {
+            // Poistettava solmu oli "pää"
+            head = next;
+        } else {
+            // Poistettava solmu oli keskeltä tai lopussa
+            prev.next = next;
+            nodeToUnlink.previous = null; // <- Katkaistaan turha linkki
+        }
+
+        if (next == null) {
+            // Poistettava solmu oli "häntä"
+            tail = prev;
+        } else {
+            // Poistettava solmu oli alusta tai keskeltä
+            next.previous = prev;
+            nodeToUnlink.next = null;
+        }
+
+        nodeToUnlink.element = null; // Autetaan roskien keruussa
+        size--;
+        return element;
+    }
 
 }
