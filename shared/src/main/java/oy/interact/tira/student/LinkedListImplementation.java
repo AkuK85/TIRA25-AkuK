@@ -81,6 +81,29 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
 
     @Override
     public void add(int index, E element) throws IndexOutOfBoundsException {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Index is out of bounds. Index: " + index + ", Size: " + size);
+        }
+
+        // Hyödynnetään reunatapaukset ja toteutetaan 0(1) aikakompleksit metodit
+        if (index == 0) {
+            addFirst(element);
+        } else if  (index == size) {
+            addLast(element);
+        } else {
+            // Lisäys keskelle listaa!
+            // Haetaan indexissä oleva solmu
+            Node<E> nodeAtIndex = getNode(index);
+            // Haetaan sitä edeltävä solmu
+            Node<E> prevNode = nodeAtIndex.previous;
+            // Luodaan uusdi solmu ja linkitetään se vanhojen väliin
+            Node<E> newNode = new Node<>(element, prevNode, nodeAtIndex);
+            // Päivitetään vanhojen solmujen linkit
+            nodeAtIndex.previous = newNode;
+            prevNode.next = newNode;
+
+            size++;
+        }
 
     }
 
@@ -114,7 +137,7 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
         Node<E> current = head;
 
         for (int i = 0; i < size; i++) {
-            if (Objects.equals(current.element, element)) {
+            if (Objects.equals(element, current.element)) {
                 return i;
             }
             current = current.next;
@@ -141,13 +164,30 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
     // Tarkista tätä tehdessä vielä erratasta!
     @Override
     public boolean remove(E element) {
+        if (head == null) {
+            throw new NoSuchElementException("List is empty");
+        }
 
+        for (Node<E> current = head; current != null; current = current.next) {
+            if (Objects.equals(element, current.element)) {
+                unlink(current);
+                return true;
+            }
+        }
+        return false;
     }
+
 
     // Tarkista tämä myös errratasta!
     @Override
     public E remove(int index) {
-
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index is out of bounds. Index: " + index + ", Size: " + size);
+        }
+        // Haetaan poistettava solmu
+        Node<E> nodeToRemove = getNode(index);
+        // Poistetaan solmu hyödyntäen unlink-metodia
+        return unlink(nodeToRemove);
     }
 
     @Override
