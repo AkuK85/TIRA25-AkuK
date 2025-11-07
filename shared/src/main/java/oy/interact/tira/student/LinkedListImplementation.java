@@ -18,10 +18,10 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
         Node<E>  previous;
 
         // Solmun muodostin
-        Node(E element, Node<E> next, Node<E> previous) {
+        Node(E element, Node<E> previous, Node<E> next) {
             this.element = element;
-            this.next = next;
             this.previous = previous;
+            this.next = next;
         }
     }
 
@@ -33,13 +33,48 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
         this.size = 0;
     }
 
+    // Lisäysoperaatio listan alkuun.
     @Override
     public void addFirst(E element) {
+        // Talletetaan vanha ensimmäinen solmu
+        final Node<E> oldHead = head;
+        // Luodaan uusi solmu
+        // Previous on null (koska tämä on uusi Head)
+        // Next osoittaa vanhaan "päähän"
+        final Node<E> newHead = new Node<E>(element, null, oldHead);
+        // Asetetaan uusi "pää"
+        this.head = newHead;
 
+        // Reunatapausten käsittely:
+        // Jos lista on tyhjä, uusi "pää"(head) on myös silloin listan viimeinen eli "häntä"(tail)
+        if (oldHead == null) {
+            this.tail = newHead;
+        }
+        // Jos lista ei ollutkaan tyhjä, vanhan "pään" previous-viittaus päivitetään osoittamaan uuteen solmuun
+        else {
+            oldHead.previous = newHead;
+        }
+        // Kasvatetaan kokoa
+        size++;
     }
 
+    // Lisäysoperaatio listan loppuun. Mekanismi sama kuin edellisessä, mutta käsitellään listan "häntä"-päätä.
     @Override
     public void addLast(E element) {
+        // Talletetaan vanha "häntä"
+        final Node<E> oldTail = tail;
+        // Luodaan uusi solmu, previous on vanha häntä ja next on null
+        final Node<E> newTail = new Node<E>(element, oldTail, null);
+        this.tail = newTail;
+
+        if (oldTail == null) {
+            // Lista oli tyhjä
+            this.head = newTail;
+        } else  {
+            // Linkitetään vanha häntä eteenpäin
+            oldTail.next = newTail;
+        }
+        size++;
 
     }
 
