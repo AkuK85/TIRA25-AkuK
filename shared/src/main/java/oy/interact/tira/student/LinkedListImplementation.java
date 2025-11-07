@@ -3,6 +3,7 @@ package oy.interact.tira.student;
 import org.w3c.dom.Node;
 import oy.interact.tira.util.LinkedListInterface;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class LinkedListImplementation<E> implements LinkedListInterface<E> {
 
@@ -101,12 +102,24 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
 
     @Override
     public E get(int index) throws IndexOutOfBoundsException {
-
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index is out of bounds. Index: " + index + ", Size: " + size);
+        }
+        // Hyödynnetään optimoitua apumetodia
+        return getNode(index).element;
     }
 
     @Override
     public int indexOf(E element) {
+        Node<E> current = head;
 
+        for (int i = 0; i < size; i++) {
+            if (Objects.equals(current.element, element)) {
+                return i;
+            }
+            current = current.next;
+        }
+        return -1;
     }
 
     @Override
@@ -194,6 +207,27 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
         nodeToUnlink.element = null; // Autetaan roskien keruussa
         size--;
         return element;
+    }
+
+    // Privaatti apumetodi optimoimaan hakuoperaatiota, hyödynnetty taas kerran luentojen materiaalia.
+    // Haetaan siitä päästä listaa joka on lähempänä haettavaa indexiä.
+    private Node<E> getNode(int index) {
+
+        if (index < (size / 2)) { // <- Haetaan alusta loppuunpäin
+            //
+            Node<E> current = head;
+            for (int i = 0; i < index; i++) {
+                current = current.next;
+            }
+            return current;
+        }
+        else  { // <- Haetaan lopusta alkuunpäin
+            Node<E> current = tail;
+            for (int i = size - 1; i > index; i--) {
+                current = current.previous;
+            }
+            return current;
+        }
     }
 
 }
