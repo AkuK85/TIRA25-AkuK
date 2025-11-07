@@ -85,12 +85,18 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
 
     @Override
     public E getFirst() throws NoSuchElementException {
-
+        if (this.head == null) {
+            throw new NoSuchElementException("List is empty");
+        }
+        return this.head.element;
     }
 
     @Override
     public E getLast() throws NoSuchElementException {
-
+        if (this.tail == null) {
+            throw new NoSuchElementException("List is empty");
+        }
+        return this.tail.element;
     }
 
     @Override
@@ -127,12 +133,14 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
 
     @Override
     public int size() {
-
+        return size;
     }
 
     @Override
     public void clear() {
-
+        head = null;
+        tail = null;
+        size = 0;
     }
 
     @Override
