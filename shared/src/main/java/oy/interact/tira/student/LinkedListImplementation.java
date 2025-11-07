@@ -88,7 +88,7 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
         // Hyödynnetään reunatapaukset ja toteutetaan 0(1) aikakompleksit metodit
         if (index == 0) {
             addFirst(element);
-        } else if  (index == size) {
+        } else if (index == size) {
             addLast(element);
         } else {
             // Lisäys keskelle listaa!
@@ -161,7 +161,6 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
         return unlink(tail);
     }
 
-    // Tarkista tätä tehdessä vielä erratasta!
     @Override
     public boolean remove(E element) {
         if (head == null) {
@@ -178,7 +177,6 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
     }
 
 
-    // Tarkista tämä myös errratasta!
     @Override
     public E remove(int index) {
         if (index < 0 || index >= size) {
@@ -204,18 +202,54 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
 
     @Override
     public void reverse() {
+        Node<E> current = head;
+        Node<E> temp = null;
 
+        temp = head;
+        head = tail;
+        tail = temp;
+
+        while (current != null) {
+            temp = current.previous;
+            current.previous = current.next;
+            current.next = temp;
+
+            current = current.previous;
+        }
     }
 
     @Override
     public void reversedTo(LinkedListInterface<E> target) {
+        target.clear();
 
+        for (Node<E> current = head; current != null; current = current.next) {
+            target.addFirst(current.element);
+        }
     }
 
     @Override
     public String toString() {
+        if (head == null) {
+            return "[]";
+        }
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        Node<E> current = head;
 
+        while (current != null) {
+        builder.append(current.element);
+        if (current.next != null) {
+            builder.append(", ");
+        }
+        current = current.next;
+        }
+        builder.append("]");
+        return builder.toString();
     }
+
+
+
+
 
     // Privaatti apumetodi poistologiikassa käytettäväksi, tässä on hyödynnetty Linked List luennolla esiteltyä ja luentokalvon
     // sivulta 10 löytyvää pseudokoodia unlink-metodista. Tätä hyödyntämällä vältetään turhaa toistoa poistooperaation
