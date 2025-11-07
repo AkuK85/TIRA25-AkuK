@@ -71,7 +71,15 @@ public class WormGamePanel extends JPanel implements KeyListener {
 		//  - use constants of GameViewConstants to calculate the middle point in Points of the game view.
 		// 3. add the point as the head of the snake
 		// 4. return the snake
-		return null;
+
+        LinkedListInterface<Point> newSnake = ListFactory.createPointLinkedList();
+
+        int centerX = GameViewConstants.GAME_WIDTH / 2;
+        int centerY = GameViewConstants.GAME_HEIGHT / 2;
+
+        newSnake.addFirst(new Point(centerX, centerY));
+
+		return newSnake;
 	}
 
 	@Override
@@ -93,10 +101,10 @@ public class WormGamePanel extends JPanel implements KeyListener {
 		/// as a filled rectangle to the view.
 
 		// STUDENT TODO: Get the size of the snake
-		int snakeSize = 0;
+		int snakeSize = snake.size();
 		for (int pieceNumber = 0; pieceNumber < snakeSize; pieceNumber++) {
 			// STUDENT TODO: Get the snake point using pieceNumber as index to linked list
-			final Point snakePiece = new Point(5, 5); 
+			final Point snakePiece = snake.get(pieceNumber);
 			// Drawing of a Point is ready below.
 			xCoord = snakePiece.x * GameViewConstants.TILE_SIZE;
 			yCoord = snakePiece.y * GameViewConstants.TILE_SIZE;
@@ -111,7 +119,7 @@ public class WormGamePanel extends JPanel implements KeyListener {
 	// The method is called by the timer, periodically.
 	private void tick() {
 		// STUDENT TODO: Get the head of the snake (first element in linked list)
-		final Point currentHead = null;
+		final Point currentHead = snake.getFirst();
 		if (currentHead == null) { return; }
 		Point newHead = null;
 		switch (currentDirection) {
@@ -133,6 +141,7 @@ public class WormGamePanel extends JPanel implements KeyListener {
 		}
 		// TODO: Add the newHead as the new first element in the linked list
 		// This moves the snake ahead in the game.
+        snake.addFirst(newHead);
 		
 
 		// If head collides with food, snake eats it...
@@ -143,6 +152,7 @@ public class WormGamePanel extends JPanel implements KeyListener {
 			// STUDENT TODO: snake didn't get anything to eat, so it does no
 			// grow. Therefore, remove the tail (last element) so that the snake does
 			// not grow.
+            snake.removeLast();
 
 		}
 		repaint();	
