@@ -1,6 +1,5 @@
 package oy.interact.tira.student;
 
-import org.w3c.dom.Node;
 import oy.interact.tira.util.LinkedListInterface;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -12,20 +11,23 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
     private Node<E> tail;
     private int size;
 
-    // Privaatti Node(Solmu) sisäluokka. Ohjeiden mukaisesti kahteensuuntaan linkitetty.
+    // Privaatti Node(Solmu) sisäluokka.
+    // Ohjeiden mukaisesti kahteen suuntaan linkitetty.
     private static class Node<E> {
         E element;
         Node<E> next;
         Node<E> previous;
 
-        // Solmun muodostin
+        // Solmun (Node) muodostin.
+        // element = Käsiteltävä tieto
+        // previous = Viittaus edelliseen solmuun
+        // next = Viittaus seuraavaan solmuun
         Node(E element, Node<E> previous, Node<E> next) {
             this.element = element;
             this.previous = previous;
             this.next = next;
         }
     }
-
 
     // Linkitetyn listan muodostin joka luo tyhjän listan
     public LinkedListImplementation() {
@@ -59,7 +61,8 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
         size++;
     }
 
-    // Lisäysoperaatio listan loppuun. Mekanismi sama kuin edellisessä, mutta käsitellään listan "häntä"-päätä.
+    // Lisäysoperaatio listan loppuun.
+    // Mekanismi sama kuin edellisessä, mutta käsitellään listan "häntä"-päätä.
     @Override
     public void addLast(E element) {
         // Talletetaan vanha "häntä"
@@ -79,6 +82,8 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
 
     }
 
+    // Lisäysoperaatio jossa lisätään annettu alkio annettuun indeksiin.
+    // Aikakompleksiusuus on O(n), paitsi kun lisätään listan alku- tai loppupäähän, Tämä on toteutettu metodin alussa.
     @Override
     public void add(int index, E element) throws IndexOutOfBoundsException {
         if (index < 0 || index > size) {
@@ -86,19 +91,19 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
         }
 
         // Hyödynnetään reunatapaukset ja toteutetaan 0(1) aikakompleksit metodit
-        if (index == 0) {
+        if (index == 0) { // <- Lisäys listan alkuun
             addFirst(element);
-        } else if (index == size) {
+        } else if (index == size) { // <- Lisäys listan loppuun
             addLast(element);
         } else {
-            // Lisäys keskelle listaa!
-            // Haetaan indexissä oleva solmu
+            // Lisäys keskelle listaa.
+            // Haetaan indexissä oleva solmu, lisäsys toteutetaan tämän indeksissä olevan solmun eteen.
             Node<E> nodeAtIndex = getNode(index);
             // Haetaan sitä edeltävä solmu
             Node<E> prevNode = nodeAtIndex.previous;
             // Luodaan uusdi solmu ja linkitetään se vanhojen väliin
             Node<E> newNode = new Node<>(element, prevNode, nodeAtIndex);
-            // Päivitetään vanhojen solmujen linkit
+            // Päivitetään vanhojen solmujen linkit osoittamaan uuteen lisättyyn solmuun
             nodeAtIndex.previous = newNode;
             prevNode.next = newNode;
 
@@ -107,6 +112,8 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
 
     }
 
+    // Hakuoperaatio joka palauttaa ensimmäisen alkion poistamatta sitä.
+    // Aikakompleksisuus on O(1).
     @Override
     public E getFirst() throws NoSuchElementException {
         if (this.head == null) {
@@ -115,6 +122,8 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
         return this.head.element;
     }
 
+    // Hakuoperaatio joka plauttaa viimeisen alkion poistamatta sitä.
+    // Tälläkin aikakompleksisuus on O(1).
     @Override
     public E getLast() throws NoSuchElementException {
         if (this.tail == null) {
@@ -123,36 +132,48 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
         return this.tail.element;
     }
 
+    // Hakuoperaatio joka palauttaa alkion annetusta indeksistä. Aikakompleksisuus O(n), mutta tässä on
+    // hyödynnetty haussa apumetodia hakemaan listan päästä jossa haettu indexi on (O(n/2)).
+    // Apumetodi löytyy tämän luokan lopusta.
     @Override
     public E get(int index) throws IndexOutOfBoundsException {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index is out of bounds. Index: " + index + ", Size: " + size);
         }
-        // Hyödynnetään optimoitua apumetodia
+        // Hyödynnetään haussa optimoitua apumetodia
         return getNode(index).element;
     }
 
+    // Hakuoperaatio joka etsii ensimmäisen alkiota vastaavan indeksin listasta.
+    // Palauttaa indeksin josta alkio löytyi tai -1 jos ei vastaavaa löydy.
+    // Aikakompleksisuus O(n).
     @Override
     public int indexOf(E element) {
         Node<E> current = head;
 
+        // Käydään lista läpi alusta loppuun.
         for (int i = 0; i < size; i++) {
+            // Hyödyntämällä Javan Objects-luokan equals-metodia tehdään null-turvalliset tarkistukset
             if (Objects.equals(element, current.element)) {
-                return i;
+                return i; // <- Vastaava alkio löytyi ja palautetaan se
             }
             current = current.next;
         }
-        return -1;
+        return -1; // <- Ei löytynyt vastaavaa alkiota
     }
 
+    // Poisto-operaatio joka poistaa ja palautttaa ensimmäisen alkion listasta. Tässä hyödynnetään erillistä
+    // unlink-apumetodia, tämä apumetodi löytyy toiseksi alimpana luokan lopusta. Aikakompleksisuus O(1).
     @Override
     public E removeFirst() throws NoSuchElementException {
         if (head == null) {
             throw new NoSuchElementException("List is empty");
         }
-        return unlink(head);
+        return unlink(head); // Apumetodin kutsu, apumetodin aikakompleksisuus on O(1)
     }
 
+    // Poisto-operaatio jolla poistetaan ja palautetaan listan viimeinen alkio. Hyödyntää myös
+    // unlink-apumetodia. Aikakompleksisuus O(1)
     @Override
     public E removeLast() throws NoSuchElementException {
         if (tail == null) {
@@ -161,38 +182,47 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
         return unlink(tail);
     }
 
+    // Poisto-operaatio joka etsii ja poistaa ensimmäisen annettua alkiota vastaavan esiintymän listasta.
+    // Taasen hyödynnetty Javan Objects.equals-metodia tukemaan null-arvojen turvallista käsittelyä,
+    // sekä unlink-apumetodia solmun poistossa.
+    // Aika-kompleksisuus on O(n).
     @Override
     public boolean remove(E element) {
         if (head == null) {
             throw new NoSuchElementException("List is empty");
         }
 
+        // Käydään lista läpi kerran (O(n))
         for (Node<E> current = head; current != null; current = current.next) {
             if (Objects.equals(element, current.element)) {
-                unlink(current);
+                unlink(current); // <- Poistetaan löydetty solmu (O(1))
                 return true;
             }
         }
-        return false;
+        return false; // Ei löydy vastaavaa
     }
 
-
+    // Poisto-operaatio joka poistaa ja palauttta alkion annetusta indeksistä. Unlink-apumetodi tässäkin käytössä.
+    // Aikakompleksisuus on O(n), mutta optimoitu haku käytössä (O(n/2)).
     @Override
     public E remove(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index is out of bounds. Index: " + index + ", Size: " + size);
         }
-        // Haetaan poistettava solmu
+        // Haetaan poistettava solmu getNode-apumetodin avulla siitä päästä listaa jossa indeksi sijaitsee
         Node<E> nodeToRemove = getNode(index);
-        // Poistetaan solmu hyödyntäen unlink-metodia
+        // Poistetaan solmu hyödyntäen unlink-apumetodia
         return unlink(nodeToRemove);
     }
 
+    // Metodi palauttaa listassa olevien alkioiden lukumäärään. Aikakompleksisuus O(1).
     @Override
     public int size() {
         return size;
     }
 
+    // Tyhjennys-metodi joka tyhjentää listan kaikista alkioista. Aikakompleksisuus O(1).
+    // Erillistä roskien keruuta ei tarvita vaan Javan oma roskienkerääjä hoitaa muistin vapauttamisen.
     @Override
     public void clear() {
         head = null;
@@ -200,29 +230,39 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
         size = 0;
     }
 
+    // Listan kääntö-metodi, jolla käännetään listan järjestys ns. paikallaan (in-place) muuttamalla solmujen
+    // viittaukset. Aika kompleksisuus on O(n).
     @Override
     public void reverse() {
         Node<E> current = head;
         Node<E> temp = null;
 
+        // Vaihdetaan listan pää(head) ja häntä(tail) päittäin
         temp = head;
         head = tail;
         tail = temp;
 
+        // Käydään lista läpi ja vaihdetaan kunkin solmun previous- ja next-viittaukset keskenään
         while (current != null) {
             temp = current.previous;
             current.previous = current.next;
             current.next = temp;
 
+            // Siirtyminen "seuraavaan" solmuun, joka löytyy nyt previous-viittauksella
             current = current.previous;
         }
     }
 
+    // Listan kääntö-operaatio jossa kopiodaan annetun listan alkiot kohdelistaan käänteisessä järjestyksessä.
+    // Aikakompleksisuus on O(n).
     @Override
     public void reversedTo(LinkedListInterface<E> target) {
-        target.clear();
+        target.clear(); // <- Alustetaan kohdelista
 
+        // Käydään annettu lista läpi alusta loppuun
         for (Node<E> current = head; current != null; current = current.next) {
+            // Lisätään alkiot vuorotellen kohdelistan ALKUUN, jolloin annnettua listaa luettaessa alusta loppuun
+            // kääntyy järjestys automaattisesti!
             target.addFirst(current.element);
         }
     }
@@ -246,10 +286,6 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
         builder.append("]");
         return builder.toString();
     }
-
-
-
-
 
     // Privaatti apumetodi poistologiikassa käytettäväksi, tässä on hyödynnetty Linked List luennolla esiteltyä ja luentokalvon
     // sivulta 10 löytyvää pseudokoodia unlink-metodista. Tätä hyödyntämällä vältetään turhaa toistoa poistooperaation
@@ -284,11 +320,12 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
     }
 
     // Privaatti apumetodi optimoimaan hakuoperaatiota, hyödynnetty taas kerran luentojen materiaalia.
-    // Haetaan siitä päästä listaa joka on lähempänä haettavaa indexiä.
+    // Haetaan siitä päästä listaa joka on lähempänä haettavaa indexiä. Täyden listan hakuoperaatio olisi
+    // aikakomplkesisuudeltaan O(n), mutta tällä optimoinnilla se muuttuu O(n/2).
     private Node<E> getNode(int index) {
 
         if (index < (size / 2)) { // <- Haetaan alusta loppuunpäin
-            //
+            // Indeksi on listan ensimmisellä puoliskolla
             Node<E> current = head;
             for (int i = 0; i < index; i++) {
                 current = current.next;
@@ -296,6 +333,7 @@ public class LinkedListImplementation<E> implements LinkedListInterface<E> {
             return current;
         }
         else  { // <- Haetaan lopusta alkuunpäin
+            // Indeksi on listan jälkimmäisellä puoliskolla
             Node<E> current = tail;
             for (int i = size - 1; i > index; i--) {
                 current = current.previous;
