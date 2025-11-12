@@ -70,7 +70,7 @@ public class Person implements Comparable<Person> {
 	}
 
 	public String getId() {
-		return id;
+        return id;
 	}
 
 	public String getLastName() {
@@ -96,7 +96,7 @@ public class Person implements Comparable<Person> {
 	}
 
 	public String getMiddleName() {
-		return middleName;
+        return middleName;
 	}
 
 	public void setMiddleName(String middleName) {
@@ -111,7 +111,7 @@ public class Person implements Comparable<Person> {
 	// if you do that, which will be bad for time and memory complexity.
 	// Instead, just compare the member variables one at a time.
 	public String getFullName() {
-		return String.format("%s, %s %s", lastName, firstName, middleName);
+        return String.format("%s, %s %s", lastName, firstName, middleName);
 	}
 
 	public int getAge() {
@@ -143,11 +143,14 @@ public class Person implements Comparable<Person> {
 	 */
 	@Override
 	public boolean equals(Object another) {
-
+        // Tarkistetaan onko "another" ylipäätään Person-luokan olio
         if (another instanceof Person) {
+            // Toteutetaan tyyppimuunnos, jotta päästään käsiksi
             Person anotherPerson = (Person) another;
+            // Verrataan identiteettejä (ID)
             return anotherPerson.getId().equals(this.id);
         } else {
+            // "another" ei ollut Person-luokan olio, eivät voi olla samoja. Palautetaan false
             return false;
         }
     }
@@ -172,17 +175,26 @@ public class Person implements Comparable<Person> {
 	 */
 	@Override
 	public int compareTo(Person another) {
+        // Esiehtojen tarkistus
         if (another == null) {
             throw new IllegalArgumentException("Cannot compare to null");
         }
+
+        // Verrataan sukunimiä
         int lastNameComparison = this.lastName.compareTo(another.lastName);
         if (lastNameComparison != 0) {
+            // Sukunimet ovat erilaiset, plautetaan tulos samointein. Muita nimiä ei tarvitse vertailla
             return lastNameComparison;
         }
+
+        // Sukunimet olivat samat, verrataan etunimiä
         int firstNameComparison = this.firstName.compareTo(another.firstName);
         if (firstNameComparison != 0) {
+            // Etunimet olivat erilaiset, palautetaan tulos
             return firstNameComparison;
         }
+
+        // Myös etunimet olivat samat, verrataan toista etunimeä
         return this.middleName.compareTo(another.middleName);
     }
 

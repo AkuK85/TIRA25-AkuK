@@ -51,7 +51,7 @@ public class CustomDate {
 	 * @return The day of month.
 	 */
 	public int getDay() {
-		return day;
+        return day;
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class CustomDate {
 	 * @return The month of the year, January is month 1.
 	 */
 	public int getMonth() {
-		return month;
+        return month;
 	}
 
 	/**
@@ -91,13 +91,19 @@ public class CustomDate {
 		if (mm < 1 || mm > 12) {
 			throw new IllegalArgumentException("No such month");
 		}
+        // Tallennetaan vanha kuukausi mahdollista "roll-backiä" varten
         int originalMonth = this.month;
 		this.month = mm;
+
+        // Käytetään "try-revert"-logiikkaa, yritetään muutosta, mutta palautetaan vanha arvo,
+        // mikäli uusi arvo johtaisi virheelliseen tilaan.
         try {
+            // Varmistetaan uusi tila luokkainvariantin avulla
             invariant();
         } catch (IllegalStateException e) {
-            // Palauta vanha kuukausiarvo mikäli invariatti heittää poikkeuksen
+            // Palauta vanha kuukausiarvo koska uusi tila oli virheellinen
             this.month = originalMonth;
+            // "Heitetään" poikkeus
             throw e;
         }
 	}
@@ -108,7 +114,7 @@ public class CustomDate {
 	 * @return The year of the date.
 	 */
 	public int getYear() {
-		return year;
+        return year;
 	}
 
 	/**
@@ -120,14 +126,15 @@ public class CustomDate {
 	 */
 
 	public void setYear(final int yy) {
-        int originalYear = this.year;
+        int originalYear = this.year; // <- Tallennetaan taas vanha arvo ensin
 		this.year = yy;
+
+        // Sama "try-revert"-logiikka kuin edellisessä setMonth-metodissa.
         try {
-            invariant();
+            invariant(); // <- Tarkistus luokkainvariantin avulla
         } catch (IllegalStateException e) {
-            // Palauta vanha vuosiarvo mikäli invariatti heittää poikkeuksen
-            this.year = originalYear;
-            throw e;
+            this.year = originalYear; // <- Vanhan arvon palautus
+            throw e; // <- Heitetään virhe
         }
 	}
 
@@ -148,6 +155,7 @@ public class CustomDate {
 					toAdd -= remainingDays + 1;
 					day = 1;
 					month += 1;
+                    // Korjattu bugi: Vuodenvaihteen käsittely
                     if (month > 12) {
                         month = 1;
                         year = year + 1;
@@ -180,20 +188,28 @@ public class CustomDate {
 				return 28;
 			}
 		default:
+            // Korjattu bugi: ei palauteta -1, vaan heitetään poikkeus
 			throw new IllegalArgumentException("Parameter month has an illegal value: " + month);
 		}
 	}
 
+    // Luokkainvariantti
+    // Yksityinen metodi, joka määrittelee oikeellisen tilan CustomDate-olioille.
+    // Tätä metodia kutsutaan muodostimissa, settereissä ja advance-metodissa varmistamaan,
+    // että CustomDate-olio ei jää epäjohdonmukaiseen tilaan.
 	private void invariant() {
 
+        // Invariantti 1: Vuosi on sallitulla alueella (Tämän säännön arvot tehtävässä annettu)
         if (year < 1800 || year > 2200) {
             throw new IllegalStateException("Parameter year not in range of 1800-2200! Year: " + year);
         }
 
+        // Invariantti 2: Kuukausi on välillä 1-12
         if (month < 1 || month > 12) {
             throw new IllegalStateException("Parameter month not in range of 1-12! Month: " + month);
         }
 
+        // Invariantti 3: Päivä on salittulla alueella kyseiselle kuudaudelle ja vuodelle(Karkausvuosi)
         int maxDay = daysInMonth(month, year);
         if (day < 1 || day > maxDay) {
             throw new IllegalStateException("Parameter day not in range of 1-" + maxDay + "! Day: " + day);

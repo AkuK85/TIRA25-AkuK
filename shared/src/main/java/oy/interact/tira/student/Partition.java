@@ -52,22 +52,36 @@ public class Partition {
         if (size < 0 || size > array.length) {
             throw new IllegalArgumentException("Size must be within array bounds");
         }
+
+        // Vaihe 1: Etsitään ensimmäinen sääntöä rikkova alkio
+        // Tämä on optimointia jonka avulla ohitetaan kaikki alussa jo valmiiksi oikealla paikkala olevat alkiot
         int index = 0;
         while (index < size && rule.test(array[index])) {
             index++;
         }
+
+        // Jos kaikki alkiot noudattivat sääntöä, koko taulukko on ositettu
         if (index == size) {
             return index;
         }
+
+        // Vaihe 2: Käsitellään loput taulukosta
+        // "Index" osoittaa sääntöä rikkovaan alkioon
+        // "nextIndex" etsii seuraavaa sääntöä noudattavaa alkiota vaihdettavaksi
         int nextIndex = index + 1;
 
         while (nextIndex < size) {
+            // Jos "nextIndex" löytää sääntöä noudattavan alkion
             if (rule.test(array[nextIndex])) {
+                // Vaihdetaan se "index":ssä olevan sääntöä rikkovan alkion kanssa
                 ArrayUtils.swap(array, nextIndex, index);
+                // Siirretään sääntöjärikkovien alkioiden rajaa yhdellä eteenpäin
                 index++;
             }
+            //Jatketaan seuraavan alkion tarkistamista
             nextIndex++;
         }
+        // Palautetaan indeksi joka osoittaa ensimmäiseen alkioon joka ei noudata sääntöä
         return index;
     }
 
@@ -85,15 +99,19 @@ public class Partition {
 	 * @throws IllegalArgumentException if either the array or rule is null.
 	 */
 	public static <T> T [] filter(final T [] array, int count, Predicate<T> predicate) throws IllegalArgumentException {
-
+        // Esiehtojen tarkistus
         if (array == null || predicate == null) {
             throw new IllegalArgumentException("Array and predicate must not be null");
         }
         if (count < 0 || count > array.length) {
             throw new IllegalArgumentException("Count must be between 0 and the length of the array");
         }
+        // Luodaan väliaikainen kopio jotta alkuperäinen säilyy muuttumattomana
         T[] tempArray = ArrayUtils.copyOf(array, count);
+        // Osioidaan kopio, eli siirretään kaikki halutut alkiot taulukon alkuun
+        // ja palautetaan haluttujen alkioiden määrä
         int newSize = byRule(tempArray, count, predicate);
+        // Luo ja plauta uusi täsmälleen oikean kokoinen taulukko
         return ArrayUtils.copyOf(tempArray, newSize);
 
 		// STUDENTS TODO implement filtering by rule, using Partition.byRule
