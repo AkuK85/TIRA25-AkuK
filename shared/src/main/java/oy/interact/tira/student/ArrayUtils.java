@@ -78,17 +78,23 @@ public class ArrayUtils {
     * @throws IllegalArgumentException if parameters are not valid
     */
    public static <T> T findEdgeValue(T [] fromArray, BiPredicate<T, T> usingPredicate) throws IllegalArgumentException {
-      if (fromArray == null || usingPredicate == null || fromArray.length == 0) {
-          throw new IllegalArgumentException("Array or predicate cannot be null and array cannot be empty");
-      }
-      T found = fromArray[0];
+       // Esiehtojen tarkistus
+       if (fromArray == null || usingPredicate == null || fromArray.length == 0) {
+           throw new IllegalArgumentException("Array or predicate cannot be null and array cannot be empty");
+       }
+       // Löydetyn reuna-arvo muuttujan alustus oletuksella että ensimmäinen alkio on reuna-arvo
+       T found = fromArray[0];
 
-      for (int i = 1; i < fromArray.length; i++) {
+       // Käydään läpi loput taulukosta aloittaen indeksistä 1
+       for (int i = 1; i < fromArray.length; i++) {
+           // Testataan onko käsiteltävä alkio sääntöjen mukaisempi reuna-arvo kuin tähän mennessä löydetty
           if (usingPredicate.test(fromArray[i], found)) {
+              // Jos on, päivitetään reuna-arvo muuttuja
               found = fromArray[i];
           }
-      }
-      return found;
+       }
+       // Palautetaan lopullinen reuna-arvo
+       return found;
    }
 
    /**
