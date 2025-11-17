@@ -209,9 +209,13 @@ public class LittleChocolateShop {
         // STUDENT: TODO: prepare the queues, following the
         // documentation in the method comments.
 
+        // Käydään läpi ja luodaan haluttu määrä kassoja(jonoja)
         for (int i = 0; i < count; i++) {
+            // Luodaan uniikit nimet kassajonoille, "Queue 1", "Queue 2" ja niin edespäin
             String queueName = "Queue" + (i + 1);
+            // Luodaan uusi, tyhjä jono-olio
             QueueInterface<Integer> newQueue = ArrayQueueFactory.createIntegerQueue();
+            // Lisätään jono karttaan sen nimellä
             queues.put(queueName, newQueue);
         }
 
@@ -232,8 +236,10 @@ public class LittleChocolateShop {
         // from the `queues` using get method,
         // and add the customer's ticket number to the queue.
 
+        // Haetaan lyhin jono kartasta sen nimen perusteella
         QueueInterface<Integer> shortestQueue = queues.get(shortestName);
 
+        // Lisätään asiakas haetun jonon häntäpäähän
         if (shortestQueue != null) {
             shortestQueue.enqueue(ticketNumber);
         }
@@ -261,6 +267,8 @@ public class LittleChocolateShop {
             if (queue != null && queue.size() > 0) {
                 // STUDENTS TODO From the `queue`, dequeue the customer's
                 // ticket number to `servedCustomer` variable.
+
+                // "Palvellaan asiakas" ja poistetaan asiakas jonon alkupäästä
                 Integer servedCustomer = queue.dequeue();
 
                 // No need to touch this code below.

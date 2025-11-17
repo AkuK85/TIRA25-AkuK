@@ -53,7 +53,7 @@ public class WormGamePanel extends JPanel implements KeyListener {
 	public WormGamePanel() {
 		super();
 		// STUDENT TODO: Go to initializeSnake and implement it following the instructions.
-		snake = initializeSnake();
+		snake = initializeSnake(); // <- Kutsutaan alustusmetodia
 		placeFood();
 		setFocusable(true);
 		addKeyListener(this);
@@ -72,13 +72,17 @@ public class WormGamePanel extends JPanel implements KeyListener {
 		// 3. add the point as the head of the snake
 		// 4. return the snake
 
+        // Luodaan ListFactoryn avulla uusi linkitetty lista
         LinkedListInterface<Point> newSnake = ListFactory.createPointLinkedList();
 
+        // Lasketaan aloituspisteen koordinaatit keskelle pelialuetta
         int centerX = GameViewConstants.GAME_WIDTH / 2;
         int centerY = GameViewConstants.GAME_HEIGHT / 2;
 
+        // Lisätään aloituspiste listan alkuun
         newSnake.addFirst(new Point(centerX, centerY));
 
+        // Palautetaan luotu käärme
 		return newSnake;
 	}
 
@@ -101,10 +105,16 @@ public class WormGamePanel extends JPanel implements KeyListener {
 		/// as a filled rectangle to the view.
 
 		// STUDENT TODO: Get the size of the snake
+
+        // Haetaan käärmeen pituus
 		int snakeSize = snake.size();
+
+        // Käydään läpi kaikki segmentit
 		for (int pieceNumber = 0; pieceNumber < snakeSize; pieceNumber++) {
 			// STUDENT TODO: Get the snake point using pieceNumber as index to linked list
-			final Point snakePiece = snake.get(pieceNumber);
+
+            // Haetaan segmentin sijainti, hyödynnetään optimoitua getNode(index)-metodia
+            final Point snakePiece = snake.get(pieceNumber);
 			// Drawing of a Point is ready below.
 			xCoord = snakePiece.x * GameViewConstants.TILE_SIZE;
 			yCoord = snakePiece.y * GameViewConstants.TILE_SIZE;
@@ -119,8 +129,11 @@ public class WormGamePanel extends JPanel implements KeyListener {
 	// The method is called by the timer, periodically.
 	private void tick() {
 		// STUDENT TODO: Get the head of the snake (first element in linked list)
-		final Point currentHead = snake.getFirst();
-		if (currentHead == null) { return; }
+
+        // Haetaan käärmeen nykyisen pään sijainti
+        final Point currentHead = snake.getFirst();
+
+        if (currentHead == null) { return; }
 		Point newHead = null;
 		switch (currentDirection) {
 			case NORTH:
@@ -141,9 +154,9 @@ public class WormGamePanel extends JPanel implements KeyListener {
 		}
 		// TODO: Add the newHead as the new first element in the linked list
 		// This moves the snake ahead in the game.
-        snake.addFirst(newHead);
-		
 
+        // Lisätään uusi pää, käärme liikkuu lisäämällä uusi segmentti listan alkuun
+        snake.addFirst(newHead);
 		// If head collides with food, snake eats it...
 		if (currentHead.equals(food)) {
 			// place a new food item on the game view
