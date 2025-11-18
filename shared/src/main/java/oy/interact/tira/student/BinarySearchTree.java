@@ -36,9 +36,51 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
 
 	@Override
 	public V add(K key, V value) throws OutOfMemoryError, IllegalArgumentException {
-		// STUDENT TODO finish the implementation of this method
-		return null;
-	}
+        // STUDENT TODO finish the implementation of this method
+
+        // Esiehtojen tarkistus
+        if (key == null || value == null) {
+            throw new IllegalArgumentException("key or value is null");
+        }
+
+        // Jos puu on tyhjä luodaan juurisolmu
+        if (root == null) {
+            root = new Node<>(key, value);
+            size++; // <- Size-muuttujan päivitys
+            return null;
+        }
+        // Kutsutaan allaolevaa rekursiivista apumetodia. Apumetodin käyttö selkeyttää koodia ja
+        // pilkkoo sen logiikkaa ymmärrettävämpään muotoon
+        return insert(root, key, value);
+    }
+
+    private V insert(Node<K, V> node, K key, V value ) {
+        // Verrataan lisättävää avainta nykyiseen solmuun
+        int compare = key.compareTo(node.key);
+
+        if (compare < 0) {
+            // Uusi avain on pienempi, siirrytään vasempaan lapsi solmuun
+            if (node.leftChild == null) {
+                node.leftChild = new Node<>(key, value);
+                size++;
+                return null;
+            }
+            return insert(node.leftChild, key, value);
+        } else if (compare > 0) {
+            // Uusi avain on suurempi, siirrytään oikeaan lapsi solmuun
+            if (node.rightChild == null) {
+                node.rightChild = new Node<>(key, value);
+                size++;
+                return null;
+            }
+            return insert(node.rightChild, key, value);
+        } else {
+            // Avain on sama. Päivitä arvo ja palauta vanha arvo
+            V oldValue = node.value;
+            node.value = value;
+            return oldValue;
+        }
+    }
 
 	@Override
 	public V get(K key) throws IllegalArgumentException {
