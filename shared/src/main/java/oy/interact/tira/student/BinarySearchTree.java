@@ -49,11 +49,11 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
             size++; // <- Size-muuttujan päivitys
             return null;
         }
-        // Kutsutaan allaolevaa rekursiivista apumetodia. Apumetodin käyttö selkeyttää koodia ja
-        // pilkkoo sen logiikkaa ymmärrettävämpään muotoon
+        // Kutsutaan allaolevaa rekursiivista apumetodia.
         return insert(root, key, value);
     }
 
+    // Rekursiivinen apumetodi lisäämiselle
     private V insert(Node<K, V> node, K key, V value ) {
         // Verrataan lisättävää avainta nykyiseen solmuun
         int compare = key.compareTo(node.key);
@@ -85,24 +85,54 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
 	@Override
 	public V get(K key) throws IllegalArgumentException {
 		// STUDENT TODO finish the implementation of this method
-		return null;
+
+        // Esiehtojen tarkistus
+        if (key == null) {
+            throw new IllegalArgumentException("key is null");
+        }
+        // Kutsutaan alla olevaa rekursiivista haku-apumetodia aloittaen juuresta
+        return search(root, key);
 	}
+
+    // Rekursiivinen apumetodi hakemiselle
+    private V search(Node<K, V> node, K key) {
+        // Jos solmu on null avainta ei löytynyt
+        if (node == null) {
+            return null;
+        }
+
+        // Verrataan avainta käsiteltävään solmuun
+        int compare = key.compareTo(node.key);
+
+        if (compare < 0) {
+            // Etsittävä on pienempi, siirrytään vasempaan lapsi solmuun
+            return search(node.leftChild, key);
+        } else if  (compare > 0) {
+            // Etsittävä on suuuremoi, siiirrytään oikeaan lapsi solmuun
+            return search(node.rightChild, key);
+        } else  {
+            // Avain löytyi, palautetaan solmun arvo
+            return node.value;
+        }
+    }
 
 	@Override
 	public int size() {
 		// STUDENT TODO finish the implementation of this method
-		return 0;
+		return  size;
 	}
 
 	@Override
 	public void clear() {
 		// STUDENT TODO finish the implementation of this method
+        root = null;
+        size = 0;
 	}
 
 	@Override
 	public boolean isEmpty() {
 		// STUDENT TODO finish the implementation of this method
-		return false;
+		return size == 0;
 	}
 
 	@Override
