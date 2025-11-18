@@ -1,7 +1,6 @@
 package oy.interact.tira.student;
 
 import oy.interact.tira.util.Pair;
-
 import oy.interact.tira.util.Tree;
 
 public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> {
@@ -10,9 +9,29 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
 	int maxDepth = 0;
 	int depthSum = 0;
 
+    // Puun juurisolmu
+    private Node<K, V> root;
+
+    // Privaatti sisäinen solmuluokka
+    private static class Node<K, V> {
+        K key; // Solmun avain, käytetään hakemiseen ja järjestämiseen
+        V value; // Arvo, eli solmuln sisältämä varsinainen data
+        Node<K, V> leftChild; // Vasen lapsi solmu = pienemmät avaimet
+        Node<K, V> rightChild; // Oikea lapsi solmu = isommat avaimet
+
+        Node(K key, V value) {
+            this.key = key;
+            this.value = value;
+            this.leftChild = null;
+            this.rightChild = null;
+        }
+    }
+
 	public BinarySearchTree() {
 		// STUDENT TODO finish the implementation of this method
-		size = 0;
+		root = null;
+        size = 0;
+
 	}
 
 	@Override
