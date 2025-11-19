@@ -139,18 +139,72 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
 	@SuppressWarnings("unchecked")
 	public Pair<K, V>[] toArray() throws OutOfMemoryError {
 		// STUDENT TODO finish the implementation of this method
-		return null;
+
+        // Luodaan täsmälleen puun kokoinen taulukko size-muuttujaa hyödyntämällä
+        Pair<K, V>[] array = (Pair<K, V>[]) new Pair[size];
+
+        if (size > 0) {
+            // Käytetään indeksilaskurina yhden alkion taulukkoa rekursiossa. Tämä toimii viittauksena,
+            // jolloin indeksi päivittyy kaikille kutsuille
+            int[] indexCounter = {0};
+            inOrderTraversal(root, array, indexCounter);
+        }
+        return array;
 	}
+
+    // Rekursiivinen In-Order läpikäynti-metodi
+    private void inOrderTraversal(Node<K, V> node, Pair<K, V>[] array, int[] indexCounter) {
+        if (node == null) return;
+        // Vasen alipuu
+        inOrderTraversal(node.leftChild, array, indexCounter);
+        // Lisää käsiteltävän solmun arvo taulukkoon ja kasvata indeksiä
+        array[indexCounter[0]++] = new Pair<>(node.key, node.value);
+        // Oikea alipuu
+        inOrderTraversal(node.rightChild, array, indexCounter);
+    }
 
 	@Override
 	public BSTStats getStats() {
 		BSTStats stats = new BSTStats();
 		// STUDENT TODO finish the implementation of this method
-		stats.minDepth = -1;
-		stats.maxDepth = -1;
-		stats.size = -1;
+        stats.size = size;
+
+        // Lasketaan syvyydet vain jos puu ei ole tyhjä
+        if (root != null) {
+            stats.minDepth = calculateMinDepth(root);
+            stats.maxDepth = calculateMaxDepth(root);
+        } else {
+            stats.minDepth = 0;
+            stats.maxDepth = 0;
+        }
+
 		return stats;
 	}
+
+    // Apumetodi maksimisyvyyden laskemiseen
+    private int calculateMaxDepth(Node<K, V> node) {
+        if (node == null) return 0;
+        // Lasketaan vasen haara
+        int leftMaxDepth = calculateMaxDepth(node.leftChild);
+        // Lasketaan oikea haara
+        int rightMaxDepth = calculateMaxDepth(node.rightChild);
+        // Palautetetaan suurempi syvyys + tämä solmu
+        return Math.max(leftMaxDepth, rightMaxDepth) + 1;
+    }
+
+    // Apumetodi minimisyvyyden laskemiseen
+    private int calculateMinDepth(Node<K, V> node) {
+        if (node == null) return 0;
+
+        // Molemmat lapsisolmut tyhjät
+        if (node.leftChild == null &&  node.rightChild == null) return 1;
+        // Lasketaan molemmat haarat
+        if (node.leftChild == null) return calculateMinDepth(node.rightChild) + 1;
+        if (node.rightChild == null) return calculateMinDepth(node.leftChild) + 1;
+
+        // palautetaan lyhempoi haara
+        return Math.min(calculateMinDepth(node.leftChild), calculateMinDepth(node.rightChild)) + 1;
+    }
 
 	public class BSTStats implements Tree.Stats {
 		public int minDepth = Integer.MAX_VALUE;
