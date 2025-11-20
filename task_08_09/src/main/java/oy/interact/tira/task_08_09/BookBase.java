@@ -113,7 +113,30 @@ public abstract class BookBase {
                 // Reset the word chars array counter for the next word read.
                 // Filter out too short words or words in filter list (do not insert them)
                 // Inserting only a non-filtered word into the data structure.
+            if (Character.isLetter(character)) {
+                if (currentIndex < MAX_WORD_LEN) {
+                    wordCharsArray[currentIndex++] =  character;
+                }
+            } else {
+                if (currentIndex > 0) {
+                    String rawWord = new String(wordCharsArray, 0, currentIndex);
+
+                    String word = rawWord.toLowerCase(Locale.ROOT);
+
+                    if (word.length() < 2) {
+                        ignoredWordsTotal++;
+                    } else if (filter.shouldFilter(word)) {
+                        ignoredWordsTotal++;
+                    }
+                    else {
+                        totalWordCount++;
+                        insert(word);
+                    }
+                    currentIndex = 0;
+                }
+            }
         }
+
 
         // STUDENT TODO: Must check the last word in the file too here!
         // There may be chars in the array, not yet handled in the loop, 
@@ -121,15 +144,31 @@ public abstract class BookBase {
 
         // REMEMBER to keep track of total and ignored word counts in the loop!
 
+        if (currentIndex > 0) {
+            String rawWord = new String(wordCharsArray, 0, currentIndex);
+            String word = rawWord.toLowerCase(Locale.ROOT);
+
+            if (word.length() < 2) {
+                ignoredWordsTotal++;
+            } else if (filter.shouldFilter(word)) {
+                ignoredWordsTotal++;
+            } else {
+                totalWordCount++;
+                insert(word);
+            }
+        }
+
         // Close the file reader.
         reader.close();
     }
+
 
     public void report() {
         if (uniqueWordCount() == 0) {
             System.out.println("*** No words to report! ***");
             return;
         }
+
         System.out.println("Listing words from a file: " + bookFile);
         System.out.println("Ignoring words from a file: " + wordsToIgnoreFile);
         System.out.println("Sorting the results...");
@@ -138,12 +177,27 @@ public abstract class BookBase {
         // and then sort words to descending order by word count. If words have
         // equal count, then compare by the word in ascending (alphabetical order)
 
+        Pair<String, Integer>[] allWords = getAllWordCounts();
+
+        Comparator<Pair<String, Integer>> comparator = (p1, p2) -> {
+            int countComparison = Integer.compare(p2.getValue(), p1.getValue());
+            if (countComparison != 0) {
+                return countComparison;
+            }
+            return p1.getKey().compareTo(p2.getKey());
+        };
+
+        FastSort.sort(allWords, comparator);
+
         System.out.println("...sorted.");
         // STUDENTS TODO
         // calculate the size for the results (<= TOP_WORD_COUNT),
         // allocate a new array for the results to member variable topWords (!)
         // and print out the results. Results must be in topWords member variable since
         // they are used later after report() has finished (see Methods for tests below).
+
+        int topCount = Math.min(TOP_WORD_COUNT, allWords.length);
+        this.topWords = ArrayUtils.copyOf(allWords, topCount);
 
         System.out.format("Using implementation: %s%n", getImplementationName());
         System.out.println("Count of words in total: " + totalWordCount);

@@ -197,7 +197,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
     // Apumetodi minimisyvyyden laskemiseen
     private int calculateMinDepth(Node<K, V> node) {
         if (node == null) {
-            return 0;
+            return -1;
         }
         if (node.leftChild == null || node.rightChild == null) {
             return 0;
