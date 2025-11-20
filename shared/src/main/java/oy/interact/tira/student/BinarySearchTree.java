@@ -7,7 +7,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
 
 	int size;
 	int maxDepth = 0;
-	int depthSum = 0;
+    int minDepth = Integer.MAX_VALUE;
 
     // Puun juurisolmu
     private Node<K, V> root;
@@ -167,43 +167,45 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
 	public BSTStats getStats() {
 		BSTStats stats = new BSTStats();
 		// STUDENT TODO finish the implementation of this method
-        stats.size = size;
 
         // Lasketaan syvyydet vain jos puu ei ole tyhjä
         if (root != null) {
-            stats.minDepth = calculateMinDepth(root);
             stats.maxDepth = calculateMaxDepth(root);
+            stats.minDepth = calculateMinDepth(root);
         } else {
             stats.minDepth = 0;
             stats.maxDepth = 0;
         }
+        stats.size = size;
 
 		return stats;
 	}
 
     // Apumetodi maksimisyvyyden laskemiseen
     private int calculateMaxDepth(Node<K, V> node) {
-        if (node == null) return 0;
-        // Lasketaan vasen haara
+
+        if (node == null) {
+            return -1;
+        }
+
         int leftMaxDepth = calculateMaxDepth(node.leftChild);
-        // Lasketaan oikea haara
         int rightMaxDepth = calculateMaxDepth(node.rightChild);
-        // Palautetetaan suurempi syvyys + tämä solmu
+
         return Math.max(leftMaxDepth, rightMaxDepth) + 1;
     }
 
     // Apumetodi minimisyvyyden laskemiseen
     private int calculateMinDepth(Node<K, V> node) {
-        if (node == null) return 0;
+        if (node == null) {
+            return 0;
+        }
+        if (node.leftChild == null || node.rightChild == null) {
+            return 0;
+        }
+        int leftDepth = calculateMinDepth(node.leftChild);
+        int rightDepth = calculateMinDepth(node.rightChild);
 
-        // Molemmat lapsisolmut tyhjät
-        if (node.leftChild == null &&  node.rightChild == null) return 1;
-        // Lasketaan molemmat haarat
-        if (node.leftChild == null) return calculateMinDepth(node.rightChild) + 1;
-        if (node.rightChild == null) return calculateMinDepth(node.leftChild) + 1;
-
-        // palautetaan lyhempoi haara
-        return Math.min(calculateMinDepth(node.leftChild), calculateMinDepth(node.rightChild)) + 1;
+        return Math.min(leftDepth, rightDepth) + 1;
     }
 
 	public class BSTStats implements Tree.Stats {
