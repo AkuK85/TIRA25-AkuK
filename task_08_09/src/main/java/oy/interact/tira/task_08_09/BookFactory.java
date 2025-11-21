@@ -24,8 +24,8 @@ public final class BookFactory {
     }
 
     public static BookBase createHashTableBook() {
-        return null;
-        // return new HashTableBookImplementation();
+        //return null;
+        return new HashTableBookImplementation();
     }
 
     public static BookBase createBadBook() {
