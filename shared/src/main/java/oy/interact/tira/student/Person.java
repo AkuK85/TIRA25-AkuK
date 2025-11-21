@@ -220,7 +220,14 @@ public class Person implements Comparable<Person> {
 	 */
 	@Override
 	public int hashCode() {
-		return 0;
+		String key = this.id;
+        int hash = 0;
+        final int PRIME = 769;
+
+        for (int i = 0; i < key.length(); i++) {
+            hash = PRIME * hash + key.charAt(i);
+        }
+        return hash;
 	}
 
 }
