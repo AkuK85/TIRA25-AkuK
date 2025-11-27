@@ -39,7 +39,7 @@ public class BooksAndWordsGUI {
 
    private void run() {
       // STUDENT: TODO: decide which book to use, BST or Hashtable
-      bookImplementation = BookFactory.createBadBook();
+      bookImplementation = BookFactory.createHashTableBook();
       if (bookImplementation == null) {
          throw new RuntimeException("BookFactory returned null, make sure to implement it");
       }

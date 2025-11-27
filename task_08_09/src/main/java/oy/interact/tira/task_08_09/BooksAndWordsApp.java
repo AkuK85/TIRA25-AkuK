@@ -54,7 +54,7 @@ public class BooksAndWordsApp
                 long start = System.currentTimeMillis();
                 System.out.println("Processing....");
                 // STUDENT: TODO: decide which book to use, BST or Hashtable
-                BookBase theBook = BookFactory.createBadBook();
+                BookBase theBook = BookFactory.createBSTBook();
                 System.out.format("Using implementation: %s", theBook.getImplementationName());
                 theBook.setSource(bookFile, wordsToIgnoreFile);
                 theBook.countUniqueWords();  

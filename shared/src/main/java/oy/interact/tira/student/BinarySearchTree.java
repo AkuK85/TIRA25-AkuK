@@ -3,22 +3,28 @@ package oy.interact.tira.student;
 import oy.interact.tira.util.Pair;
 import oy.interact.tira.util.Tree;
 
+// Geneerinen BST, eli Binäärinen Hakupuu.
+
 public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> {
 
+    // Puun muuttujat
+    private Node<K, V> root;
 	int size;
+
+    // Syvyysmuuttujat
 	int maxDepth = 0;
     int minDepth = Integer.MAX_VALUE;
 
-    // Puun juurisolmu
-    private Node<K, V> root;
 
-    // Privaatti sisäinen solmuluokka
+    // Privaatti sisäinen solmuluokka.
+    // Sisältää avaimen, arvon ja vittaukset lapsisolmuihin.
     private static class Node<K, V> {
         K key; // Solmun avain, käytetään hakemiseen ja järjestämiseen
-        V value; // Arvo, eli solmuln sisältämä varsinainen data
+        V value; // Arvo, eli solmun sisältämä varsinainen data
         Node<K, V> leftChild; // Vasen lapsi solmu = pienemmät avaimet
         Node<K, V> rightChild; // Oikea lapsi solmu = isommat avaimet
 
+        // Solmun muodostin
         Node(K key, V value) {
             this.key = key;
             this.value = value;
@@ -27,6 +33,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
         }
     }
 
+    // Puun muodostin
 	public BinarySearchTree() {
 		// STUDENT TODO finish the implementation of this method
 		root = null;
@@ -34,6 +41,8 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
 
 	}
 
+    // Lisäys-metodi, joka lisää tai päivittää avain/arvo-parin puuhun.
+    // Aikakompleksisuus, Paras = O(log n), Pahin = O(n).
 	@Override
 	public V add(K key, V value) throws OutOfMemoryError, IllegalArgumentException {
         // STUDENT TODO finish the implementation of this method
@@ -42,8 +51,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
         if (key == null || value == null) {
             throw new IllegalArgumentException("key or value is null");
         }
-
-        // Jos puu on tyhjä luodaan juurisolmu
+        // Base Case: Puu on tyhjä. Luodaan puulle juurisolmu
         if (root == null) {
             root = new Node<>(key, value);
             size++; // <- Size-muuttujan päivitys
@@ -53,7 +61,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
         return insert(root, key, value);
     }
 
-    // Rekursiivinen apumetodi lisäämiselle
+    // Rekursiivinen apumetodi lisäämiselle, etsii oikean paikan lisättävälle tiedolle vertaamalla avaimia
     private V insert(Node<K, V> node, K key, V value ) {
         // Verrataan lisättävää avainta nykyiseen solmuun
         int compare = key.compareTo(node.key);
@@ -82,6 +90,8 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
         }
     }
 
+    // Haku-metodi, haetaan ja palutetaan solmun arvo annetun avaimen perusteella.
+    // Rekursiivinen haku toteutettu search-apumetodissa
 	@Override
 	public V get(K key) throws IllegalArgumentException {
 		// STUDENT TODO finish the implementation of this method
@@ -122,6 +132,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
 		return  size;
 	}
 
+    // Tyhjennys-metodi
 	@Override
 	public void clear() {
 		// STUDENT TODO finish the implementation of this method
@@ -129,12 +140,14 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
         size = 0;
 	}
 
+    // Tarkistus-metodi sille onko puu tyhjä
 	@Override
 	public boolean isEmpty() {
 		// STUDENT TODO finish the implementation of this method
 		return size == 0;
 	}
 
+    // Taulukointi-metodi, joka palauttaa puun sisöllön lajiteltuna taulukkona.
 	@Override
 	@SuppressWarnings("unchecked")
 	public Pair<K, V>[] toArray() throws OutOfMemoryError {
@@ -152,7 +165,8 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
         return array;
 	}
 
-    // Rekursiivinen In-Order läpikäynti-metodi
+    // Rekursiivinen "In-Order Traversal"-metodi. Läpinkäyntijärjestys on Vasen -> Nykyinen -> Oikea.
+    // Tämä mekanismi käsitteelee alkiot niiden luonnollisessa järjestyksessä.
     private void inOrderTraversal(Node<K, V> node, Pair<K, V>[] array, int[] indexCounter) {
         if (node == null) return;
         // Vasen alipuu
@@ -163,6 +177,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
         inOrderTraversal(node.rightChild, array, indexCounter);
     }
 
+    // Tilastointi-metodi, joka laskee ja palauttaa tilastot puun rakenteesta.
 	@Override
 	public BSTStats getStats() {
 		BSTStats stats = new BSTStats();
@@ -181,30 +196,36 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Tree<K, V> 
 		return stats;
 	}
 
-    // Apumetodi maksimisyvyyden laskemiseen
+    // Apumetodi maksimisyvyyden laskemiseen. Maksimisyvyys = pisin polku juuresta lehteen
     private int calculateMaxDepth(Node<K, V> node) {
 
         if (node == null) {
             return -1;
         }
 
+        // Rekursiivinen maksimisyvyyden lasku
         int leftMaxDepth = calculateMaxDepth(node.leftChild);
         int rightMaxDepth = calculateMaxDepth(node.rightChild);
 
+        // Palautetaan pidempi reitti
         return Math.max(leftMaxDepth, rightMaxDepth) + 1;
     }
 
-    // Apumetodi minimisyvyyden laskemiseen
+    // Apumetodi minimisyvyyden laskemiseen. Minimysyvyys = lyhin polku juuresta "tyhjään" linkkiin
     private int calculateMinDepth(Node<K, V> node) {
         if (node == null) {
             return -1;
         }
+        // Jos solmulla on tyhjä haara se on lyhin polku
         if (node.leftChild == null || node.rightChild == null) {
             return 0;
         }
+
+        // Rekursiivinen minimisyvyyden laski
         int leftDepth = calculateMinDepth(node.leftChild);
         int rightDepth = calculateMinDepth(node.rightChild);
 
+        // Palautetaan lyhempi reitti
         return Math.min(leftDepth, rightDepth) + 1;
     }
 
