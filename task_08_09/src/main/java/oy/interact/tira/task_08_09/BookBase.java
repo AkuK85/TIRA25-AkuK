@@ -113,26 +113,30 @@ public abstract class BookBase {
                 // Reset the word chars array counter for the next word read.
                 // Filter out too short words or words in filter list (do not insert them)
                 // Inserting only a non-filtered word into the data structure.
+
+            // Tokenisointi. Erotetaan sanat kirjaimista
             if (Character.isLetter(character)) {
                 if (currentIndex < MAX_WORD_LEN) {
                     wordCharsArray[currentIndex++] =  character;
                 }
             } else {
+                // Sana katkeaa, esim. välilyöntiin tai pisteeseen
                 if (currentIndex > 0) {
                     String rawWord = new String(wordCharsArray, 0, currentIndex);
 
+                    // Käsittely ja suodatus
                     String word = rawWord.toLowerCase(Locale.ROOT);
 
                     if (word.length() < 2) {
-                        ignoredWordsTotal++;
+                        ignoredWordsTotal++; // Hylätään yhden merkin mittaiset sanat
                     } else if (filter.shouldFilter(word)) {
-                        ignoredWordsTotal++;
+                        ignoredWordsTotal++; // Hylätään ignore-listalla olevat sanat
                     }
                     else {
-                        totalWordCount++;
-                        insert(word);
+                        totalWordCount++; // Hyväksytty sana
+                        insert(word); // Lisätään sana tietorakenteeseen
                     }
-                    currentIndex = 0;
+                    currentIndex = 0; // Puskurin nollaus
                 }
             }
         }
@@ -144,6 +148,7 @@ public abstract class BookBase {
 
         // REMEMBER to keep track of total and ignored word counts in the loop!
 
+        // Käsitellään tiedoston viimeinen sana, jos se jäi puskuriin
         if (currentIndex > 0) {
             String rawWord = new String(wordCharsArray, 0, currentIndex);
             String word = rawWord.toLowerCase(Locale.ROOT);
@@ -177,16 +182,21 @@ public abstract class BookBase {
         // and then sort words to descending order by word count. If words have
         // equal count, then compare by the word in ascending (alphabetical order)
 
+        // Haetaan sanat
         Pair<String, Integer>[] allWords = getAllWordCounts();
 
+        // Vertailijan määärittely lajittelua varten
         Comparator<Pair<String, Integer>> comparator = (p1, p2) -> {
+            // Ensisijainen järjestys, sanojen esiintymismäärä laskevasti
             int countComparison = Integer.compare(p2.getValue(), p1.getValue());
             if (countComparison != 0) {
                 return countComparison;
             }
+            // Toissijainen järjestys, sana aakkosjärjestyksessä nousevasti
             return p1.getKey().compareTo(p2.getKey());
         };
 
+        //  Lajittelu hyödyntäen omaa aiempaa FastSort(Quick sort)-toteutusta
         FastSort.sort(allWords, comparator);
 
         System.out.println("...sorted.");
@@ -196,9 +206,13 @@ public abstract class BookBase {
         // and print out the results. Results must be in topWords member variable since
         // they are used later after report() has finished (see Methods for tests below).
 
+        // Otetaan top 100 lista
         int topCount = Math.min(TOP_WORD_COUNT, allWords.length);
+
+        // Luodaan uusi top 100 taulukko
         this.topWords = ArrayUtils.copyOf(allWords, topCount);
 
+        // Tulostus
         System.out.format("Using implementation: %s%n", getImplementationName());
         System.out.println("Count of words in total: " + totalWordCount);
         System.out.println("Count of words to ignore:    " + filter.ignoreWordCount());
