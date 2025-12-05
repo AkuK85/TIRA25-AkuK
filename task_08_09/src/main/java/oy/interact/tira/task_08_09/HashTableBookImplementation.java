@@ -5,14 +5,17 @@ import oy.interact.tira.util.Dictionary;
 import oy.interact.tira.util.Pair;
 import oy.interact.tira.factories.HashTableFactory;
 
+// Konkreettinen BookBase-toteutus, joka hyödyntää toteutettua hajautustaulua.
 public class HashTableBookImplementation extends BookBase {
 
     private HashTableDictionary<String, Integer> wordCounts;
 
     public HashTableBookImplementation() {
-
+        // Tyhjä muodostin
     }
 
+    // createDataStructure-metodin avulla luoaan tietorakenne HashTableFactory-tehdasluokan kautta ja
+    // tehdään tyyppimuunnos.
     @Override
     protected void createDataStructure() {
         @SuppressWarnings("unchecked")
@@ -22,8 +25,9 @@ public class HashTableBookImplementation extends BookBase {
 
     @Override
     protected void insert(final String word) {
+        // Tarkista onko sana jo taulussa
         Integer currentCount = wordCounts.get(word);
-
+        // Lisää tai päivitä
         if (currentCount == null) {
             wordCounts.add(word, 1);
         } else {

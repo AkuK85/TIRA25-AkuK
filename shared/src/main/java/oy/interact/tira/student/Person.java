@@ -218,6 +218,9 @@ public class Person implements Comparable<Person> {
 	 * 
 	 * @return Returns the hash for the person.
 	 */
+
+    // Polynominen rullaava hash-algoritmi, joka laskee hajautusarvon Person-oliolle.
+    // Käytetty alkuluku löydetty tästä lähteestä -> https://planetmath.org/goodhashtableprimes
 	@Override
 	public int hashCode() {
 		String key = this.id;
