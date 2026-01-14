@@ -60,7 +60,8 @@ public class Graph<T> {
    public Graph(GraphPathListener<T> listener) {
       this.listener = listener;
       // STUDENT TODO: remove throw and initialize the edge list for the graph
-      throw new NotYetImplementedException("Graph not yet implemented");
+      // Alustus Hashmapilla
+      this.edgeList = new HashMap<>();
    }
 
    /**
@@ -68,6 +69,10 @@ public class Graph<T> {
     */
    public void clear() {
       // STUDENT TODO
+      // Jos LIsta ei ole tyhjä, kutsutaan Javan Hashmapin clear-metodia
+      if (edgeList != null) {
+         edgeList.clear();
+      }
    }
 
    /**
@@ -93,7 +98,14 @@ public class Graph<T> {
     */
    public Vertex<T> createVertexFor(T element) {
       // STUDENT TODO
-      return null;
+      // Luodaan uusi Vertex-olio
+      Vertex<T> newVertex = new Vertex<>(element);
+
+      // Lisätään uusi Vertex-olio Map-rakenteeseen, putIfAbsent-metodi varmistaa ettei olemassa olevaa solmua
+      // vahingossa ylikirjoiteta
+      edgeList.putIfAbsent(newVertex, new ArrayList<>());
+
+      return newVertex;
    }
 
    /**
@@ -103,7 +115,8 @@ public class Graph<T> {
     */
    public Set<Vertex<T>> getVertices() {
       // STUDENT TODO
-      return null;
+      // Javan Map-luokan keySet-metodi palauttaa kaikki avaimet eli verkon solmut
+      return edgeList.keySet();
    }
 
    /**
@@ -117,6 +130,13 @@ public class Graph<T> {
     */
    public void addEdge(Edge.EdgeType type, Vertex<T> source, Vertex<T> destination, double weight) {
       // STUDENT TODO
+      // Lisätään reuna aina lähteestä kohteeseen
+      addDirectedEdge(source, destination, weight);
+
+      // Jos kyseessä on suuntaamaton verkko, lisätään myös käänteinen reuna kohde->lähde
+      if (type == Edge.EdgeType.UNDIRECTED) {
+         addDirectedEdge(destination, source, weight);
+      }
    }
 
    /**
@@ -129,6 +149,14 @@ public class Graph<T> {
     */
    public void addDirectedEdge(Vertex<T> source, Vertex<T> destination, double weight) {
       // STUDENT TODO
+      // Haetaan lähtösolmun reunalista
+      List<Edge<T>> edges = edgeList.get(source);
+      // Varmistus että solmu on olemassa,
+      if (edges != null) {
+         // Luodaan uusi solmu ja lisätään se listaan
+         Edge<T> edge = new Edge<>(source, destination, weight);
+         edges.add(edge);
+      }
    }
 
    /**
@@ -140,7 +168,11 @@ public class Graph<T> {
     */
    public List<Edge<T>> getEdges(Vertex<T> source) {
       // STUDENT TODO
-      return null;
+      // Palautetaan lista tai tyhjä lista, mikäli solmua ei ole
+      if (edgeList.containsKey(source)) {
+         return edgeList.get(source);
+      }
+      return new ArrayList<>();
    }
 
    /**
@@ -153,6 +185,12 @@ public class Graph<T> {
     */
    public Vertex<T> getVertexFor(T element) {
       // STUDENT TODO
+
+      for (Vertex<T> vertex : edgeList.keySet()) {
+         if (vertex.getElement().equals(element)) {
+            return vertex;
+         }
+      }
       return null;
    }
 
@@ -328,21 +366,21 @@ public class Graph<T> {
    @Override
    public String toString() {
       StringBuilder output = new StringBuilder();
-      // for (Map.Entry<Vertex<T>, List<Edge<T>>> entry : edgeList.entrySet()) {
-      //    output.append("[");
-      //    output.append(entry.getKey().toString());
-      //    output.append("] -> [ ");
-      //    int counter = 0;
-      //    int count = entry.getValue().size();
-      //    for (Edge<T> edge : entry.getValue()) {
-      //       output.append(edge.getDestination().toString());
-      //       if (counter < count - 1) {
-      //          output.append(", ");
-      //       }
-      //       counter++;
-      //    }
-      //    output.append(" ]\n");
-      // }
+      for (Map.Entry<Vertex<T>, List<Edge<T>>> entry : edgeList.entrySet()) {
+          output.append("[");
+          output.append(entry.getKey().toString());
+          output.append("] -> [ ");
+          int counter = 0;
+          int count = entry.getValue().size();
+          for (Edge<T> edge : entry.getValue()) {
+             output.append(edge.getDestination().toString());
+             if (counter < count - 1) {
+                output.append(", ");
+             }
+             counter++;
+          }
+          output.append(" ]\n");
+       }
       return output.toString();
    }
 }
