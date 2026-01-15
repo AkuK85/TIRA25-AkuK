@@ -357,6 +357,13 @@ public class Graph<T> {
       }
    }
 
+   // Distance-apumetodi käsittelemään etäisyyksiä Dijksran-algorimissa. Metodi palauttaa solmun etäisyyden
+   // paths-taulukosta, jos solmua ei ole löydetty etäisyys on Double.MAX_VALUE
+   private double distance(Vertex<T> node, Map<Vertex<T>, Visit<T>> paths) {
+      Visit<T> visit = paths.get(node);
+      return (visit != null) ? visit.distance : Double.MAX_VALUE;
+   }
+
    /**
     * Finds the shortest path from start to end using Dijkstra's algorithm.
     * 
@@ -373,6 +380,7 @@ public class Graph<T> {
     * @param end The vertex to search the shortest path to.
     * @return An object containing information about the result of the search.
     */
+
    public DijkstraResult<T> shortestPathDijkstra(Vertex<T> start, Vertex<T> end) {
       DijkstraResult<T> result = new DijkstraResult<>();
       result.pathFound = false; // set this to true if a path is found in search
@@ -383,6 +391,30 @@ public class Graph<T> {
       ArrayList<T> currentPath = new ArrayList<>();
       // STUDENT: TODO implement the algorithm below
 
+      // Lasketaan lyhimmät polut kaikkiin saavutettaviin solmuihin
+      Map<Vertex<T>, Visit<T>> paths = shortestPathsFrom(start);
+
+      // Jos maalisolmu on saavutettavissa
+      if (paths.containsKey(end)) {
+         List<Edge<T>> edges = route(end, paths);
+
+         // Validointi, eli reitti on olemassa jos lista ei ole tyhjä tai ollaan jo perillä
+         if (!edges.isEmpty() || start.equals(end)) {
+            result.pathFound = true;
+            result.steps = edges.size();
+            result.totalWeigth = distance(end, paths);
+
+            // täytetään palautettava lista
+            currentPath.add(start.getElement());
+            for (Edge<T> edge : edges) {
+               currentPath.add(edge.getDestination().getElement());
+               // Visualisointi
+               if (listener != null) {
+                  listener.pathChanged(edge.getDestination());
+               }
+            }
+         }
+      }
 
       // STUDENT: implement the algorithm above under the previous comment.
       if (result.pathFound) {
@@ -407,6 +439,28 @@ public class Graph<T> {
       List<Edge<T>> path = new ArrayList<>();
       // STUDENT: TODO implement the algorithm below
 
+      if (toDestination == null || paths.containsKey(toDestination)) {
+         return path;
+      }
+
+      Visit<T> visit = paths.get(toDestination);
+
+      // Hyödynnetään omaa pino toteutusta reitin kääntämiseen
+      StackImplementation<Edge<T>> stack = new StackImplementation<>();
+
+      // Backtracking-silmukka jossa seurataan Visit-olioiden linkkejä taaksepäin. Silmukka lopetetaan kun
+      // aloitus solmu saavitetaan
+      while (visit != null && visit.type != Visit.Type.START) {
+         stack.push(visit.edge);
+         Vertex<T> previous = visit.edge.getSource();
+         visit = paths.get(previous);
+      }
+
+      // Tyhjennetään saatu pino listaan jolloin järjestys kääntyy
+      while (!stack.isEmpty()) {
+         path.add(stack.pop());
+      }
+
       return path;
    }
    
@@ -423,6 +477,7 @@ public class Graph<T> {
    public Map<Vertex<T>, Visit<T>> shortestPathsFrom(Vertex<T> start) {
       Visit<T> visit = new Visit<>();
       visit.type = Visit.Type.START;
+      visit.distance = 0;
       Map<Vertex<T>, Visit<T>> paths = new HashMap<>();
 
       paths.put(start, visit);
@@ -431,6 +486,60 @@ public class Graph<T> {
       // - a priority queue
       // - helper method distance you implement
 
+      // Pidetään kirjaa käsitellysitä solmuista
+      Set<Vertex<T>> alreadyVisited = new HashSet<>();
+
+      // Luodaan prioriteetti jono hyödyntäen distance-apumetodia vertailuun, pienimmän etäisyyden omaava solmu nousee
+      // jonon kärkeen
+      PriorityQueue<Vertex<T>> queue = new PriorityQueue<>(new Comparator<Vertex<T>>() {
+         @Override
+         public int compare(Vertex<T> v1, Vertex<T> v2) {
+            return Double.compare(distance(v1, paths), distance(v2, paths));
+         }
+      });
+
+      // Lisätään aloitussolmu jonoon
+      queue.add(start);
+
+      while (!queue.isEmpty()) {
+         // Otetaan solmu jolla pienin etäisyys
+         Vertex<T> current = queue.poll();
+
+         // Jos solmju on jo käsitelty ohitetaan se
+         if (alreadyVisited.contains(current)) {
+            continue;
+         }
+         alreadyVisited.add(current);
+
+         // Haetaan nykyinen etäisyys apumetodilla
+         double currentDistance = distance(current, paths);
+
+         // Käydään läpi kaikki naapurit
+         List<Edge<T>> edges = getEdges(current);
+         if (edges != null) {
+            for (Edge<T> edge : edges) {
+               Vertex<T> neighbor = edge.getDestination();
+
+               // Lasketaan uusi etäisyys naapuriin tämän reunan kautta
+               double newDistance = currentDistance + edge.getWeigth();
+
+               // Jos uusi reitti on lyhempi kuin aiemmin tunnettu, päivitetään uusi eotäisyys ja talletaaan
+               // uusi paras reitti Mappiin
+               if (newDistance < distance(neighbor, paths)) {
+                  Visit<T> newVisit = new Visit<>();
+                  newVisit.type = Visit.Type.EDGE;
+                  newVisit.edge = edge;
+                  newVisit.distance = newDistance;
+
+                  paths.put(neighbor, newVisit);
+
+                  // Lisätään naapuri jonoon uudella prioriteetilla
+                  queue.add(neighbor);
+               }
+
+            }
+         }
+      }
       return paths;
    }
 
