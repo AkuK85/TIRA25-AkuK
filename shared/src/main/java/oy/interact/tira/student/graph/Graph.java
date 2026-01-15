@@ -2,11 +2,9 @@ package oy.interact.tira.student.graph;
 
 import java.util.Map;
 import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.Set;
 
 import oy.interact.tira.student.graph.Edge.EdgeType;
-import oy.interact.tira.util.NotYetImplementedException;
 
 import java.util.ArrayDeque;
 import java.util.Comparator;
@@ -17,6 +15,10 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ArrayList;
+
+// Omien pino- ja jono-tietorakenteiden importit
+import oy.interact.tira.student.StackImplementation;
+import oy.interact.tira.student.ArrayQueue;
 
 /**
  * Implementation of the graph data structure and associated algorithms.
@@ -149,7 +151,7 @@ public class Graph<T> {
     */
    public void addDirectedEdge(Vertex<T> source, Vertex<T> destination, double weight) {
       // STUDENT TODO
-      // Haetaan lähtösolmun reunalista
+      // Haetaan lähtösolmun reunuslista
       List<Edge<T>> edges = edgeList.get(source);
       // Varmistus että solmu on olemassa,
       if (edges != null) {
@@ -212,14 +214,53 @@ public class Graph<T> {
     *         they were found.
     */
    public List<Vertex<T>> breadthFirstSearch(Vertex<T> from, Vertex<T> target) {
-      // STUDENT TODO      
-      return null;
+      // STUDENT TODO
+      List<Vertex<T>> visitedOrder = new ArrayList<>();
+      Set<Vertex<T>> visitedSet = new HashSet<>();
+
+      // Jos aloitus solmu puuttu palautetaan tyhjä lista
+      if (from == null) return visitedOrder;
+
+      //Käytetään omaa ArrayQueue-toteutusta
+      ArrayQueue<Vertex<T>> queue = new ArrayQueue<>();
+
+      // Aloitus
+      visitedSet.add(from);
+      queue.enqueue(from);
+
+      // Esiehdon avulla silmukka pyörii vain jos jono ei ole tyhjä
+      while (!queue.isEmpty()) {
+         // Esiehdon ansiosta dequeue turvallista
+         Vertex<T> current = queue.dequeue();
+
+         visitedOrder.add(current);
+         if (listener != null) listener.pathChanged(current);
+
+         // Jos kohde löytyy katkaistaan etsintä
+         if (target != null && current.equals(target)) {
+            break;
+         }
+
+         // Käydään naapurit läpi
+         List<Edge<T>> edges = getEdges(current);
+         if (edges != null) {
+            for (Edge<T> edge : edges) {
+               Vertex<T> neighbor = edge.getDestination();
+               if (!visitedSet.contains(neighbor)) {
+                  visitedSet.add(neighbor);
+                  queue.enqueue(neighbor);
+               }
+            }
+         }
+      }
+
+      return visitedOrder;
    }
 
    /**
     * Does depth first search (DFS) of the graph starting from a vertex.
-    * 
-    * Algorithm MUST call listener.pathChanged(vertex) whenever a 
+    *
+    * Algorithm MUST call listener.pathChanged(vertex) whenever a
     * new vertex is visited when doing the search.
     *
     * If target is null, search is done for the whole graph. Otherwise,
@@ -227,13 +268,31 @@ public class Graph<T> {
     *
     * Returns a list of vertices in the order they were met in the graph.
     * If graph is empty, returns an empty list.
-    * 
+    *
     * @param from   The vertex where the search is started from.
     * @param target An optional ending vertex, null if not given.
     * @return Returns all the visited vertices traversed while doing DFS.
     */
    public List<Vertex<T>> depthFirstSearch(Vertex<T> from, Vertex<T> target) {
       // STUDENT TODO
+      List<Vertex<T>> visitedOrder = new ArrayList<>();
+      Set<Vertex<T>> visitedSet = new HashSet<>();
+
+      // Käytetään omaa StackImplementation-toteutusta
+      StackImplementation<Vertex<T>> stack = new StackImplementation<>();
+
+      stack.push(from);
+      visitedSet.add(from);
+
+      // Taas esiehdolla varmistetaan että silmukka pyörii vain jos pino ei ole tyhjä
+      while (!stack.isEmpty()) {
+         Vertex<T> current = stack.peek();
+
+         visitedOrder.add(current);
+
+      }
+
+
       return null;
    }
    
