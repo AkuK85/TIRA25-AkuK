@@ -278,22 +278,55 @@ public class Graph<T> {
       List<Vertex<T>> visitedOrder = new ArrayList<>();
       Set<Vertex<T>> visitedSet = new HashSet<>();
 
+      if (from == null) return visitedOrder;
+
       // Käytetään omaa StackImplementation-toteutusta
       StackImplementation<Vertex<T>> stack = new StackImplementation<>();
 
+      // Aloitus
       stack.push(from);
       visitedSet.add(from);
+      visitedOrder.add(from);
+
+      if (listener != null) listener.pathChanged(from);
 
       // Taas esiehdolla varmistetaan että silmukka pyörii vain jos pino ei ole tyhjä
       while (!stack.isEmpty()) {
+         // Katsotaan pinon päällimäinen poistamatta sitä
          Vertex<T> current = stack.peek();
 
-         visitedOrder.add(current);
+         if (target != null && current.equals(target)) {
+            break;
+         }
 
+         List<Edge<T>> edges = getEdges(current);
+         boolean foundUnvisited = false;
+
+         if (edges != null) {
+            for (Edge<T> edge : edges) {
+               Vertex<T> neighbor = edge.getDestination();
+
+               // Etsitään ensimmäinen vierailematon naapuri
+               if (!visitedSet.contains(neighbor)) {
+                  // Merkitään käydyksi ja lisätään pinoon heti
+                  visitedSet.add(neighbor);
+                  visitedOrder.add(neighbor);
+                  if (listener != null) listener.pathChanged(neighbor);
+
+                  stack.push(neighbor);
+
+                  // Katkaistaan silmukka ja palataan while-silmukan alkuun käsittelemään uusi naapuri
+                  foundUnvisited = true;
+                  break;
+               }
+            }
+         }
+         // Jos ei enään vierailemattomia naapureita peruutetaan
+         if (!foundUnvisited) {
+            stack.pop();
+         }
       }
-
-
-      return null;
+      return visitedOrder;
    }
    
    // Dijkstra starts here.
