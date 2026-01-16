@@ -17,12 +17,18 @@ public class Visit<T> {
     /** The edge of the visit. */
     public Edge<T> edge = null;
 
+    // Lisätty distance muuttuja etäisyyden laskentaa vareten, alustus maksimiarvoon jotta vertailu toimii oikein
+    public double distance = Double.MAX_VALUE;
+
     /**
      * Constructs a visit of type START with a null edge.
      */
     Visit() {
         this.type = Type.START;
         this.edge = null;
+        // Lisätty distance muuttuja myös muodostimeen
+        this.distance = 0;
+
     }
 
     /**
