@@ -96,7 +96,9 @@ public class MazeNode implements Comparable<MazeNode> {
    public int hashCode() {
       // STUDENT: TODO: implement an efficient algorithm for calculating 
       // hash from the coordinates.
-      return 0;
+
+      // Siirretään x-koordinaattia 16 bittiä vasemmale ja yhdistetään y-koordinaattiin OR-operaatiolla.
+      return (xCoordinate << 16) | yCoordinate;
    }
 
    @Override
